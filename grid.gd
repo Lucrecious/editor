@@ -11,15 +11,13 @@ func set_view(rect : Rect2) -> void:
 	rect.size.x += Constants.BLOCK_SIZE - fmod(rect.size.x, Constants.BLOCK_SIZE)
 	rect.size.y += Constants.BLOCK_SIZE - fmod(rect.size.y, Constants.BLOCK_SIZE)
 	_grid = rect
+	update()
 
 func set_color(color : Color):
 	_color = color
 
 func _draw():
 	_draw_grid()
-
-func _process(delta):
-	update()
 
 func _draw_grid() -> void:
 	var top_y = _grid.position.y
