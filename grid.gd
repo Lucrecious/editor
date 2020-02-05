@@ -2,6 +2,7 @@ extends Node2D
 
 class_name EditorGrid
 
+var _units := Vector2(Constants.BLOCK_SIZE, Constants.BLOCK_SIZE)
 var _grid := Rect2(Vector2(0, 0), Vector2(0, 0))
 var _color := Color.black
 
@@ -13,8 +14,12 @@ func set_view(rect : Rect2) -> void:
 	_grid = rect
 	update()
 
+func to_pixels(coords : Vector2) -> Vector2:
+	return coords * _units
+
 func set_color(color : Color):
 	_color = color
+	update()
 
 func _draw():
 	_draw_grid()

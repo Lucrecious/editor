@@ -1,10 +1,9 @@
 extends Control
 
+signal command_entered
+
 onready var output := $Text/Output
 onready var command := $Text/Command
-
-var history := []
-var history_max = 11
 
 func _ready():
 	command.connect("text_entered", self, "_pressed_enter")
@@ -16,17 +15,14 @@ func unfocus():
 	command.release_focus()
 
 func _pressed_enter(text : String) -> void:
-	var result = _command(text)
+	var result = _parse(text)
+	emit_signal("command_entered", result)
 	
-	history.append(result)
-	if history.size() >= history_max:
-		history.pop_front()
-	
-	output.text = LutUtils.join(history, "\n")
+	output.put(result.split("\n"))
 	
 	command.clear()
 
-func _command(command : String) -> String:
+func _parse(command : String) -> String:
 	return "Error!"
 
 

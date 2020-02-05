@@ -1,11 +1,13 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://src/editor/hud.gd" type="Script" id=1]
 [ext_resource path="res://src/editor/terminal/terminal.tscn" type="PackedScene" id=2]
 [ext_resource path="res://src/editor/space.gd" type="Script" id=3]
-[ext_resource path="res://src/editor/view.tscn" type="PackedScene" id=4]
-[ext_resource path="res://src/editor/grid.tscn" type="PackedScene" id=5]
-[ext_resource path="res://icon.png" type="Texture" id=6]
+[ext_resource path="res://src/editor/render.gd" type="Script" id=4]
+[ext_resource path="res://src/editor/view.tscn" type="PackedScene" id=5]
+[ext_resource path="res://src/editor/grid.tscn" type="PackedScene" id=6]
+[ext_resource path="res://src/editor/regions.tscn" type="PackedScene" id=7]
+[ext_resource path="res://icon.png" type="Texture" id=8]
 
 [node name="Editor" type="Node2D"]
 
@@ -17,10 +19,15 @@ script = ExtResource( 1 )
 [node name="Space" type="Node2D" parent="."]
 script = ExtResource( 3 )
 
-[node name="View" parent="Space" instance=ExtResource( 4 )]
+[node name="Render" type="Node2D" parent="Space"]
+script = ExtResource( 4 )
 
-[node name="Grid" parent="Space" instance=ExtResource( 5 )]
+[node name="View" parent="Space" instance=ExtResource( 5 )]
+
+[node name="Grid" parent="Space" instance=ExtResource( 6 )]
+
+[node name="Regions" parent="Space" instance=ExtResource( 7 )]
 
 [node name="Sprite" type="Sprite" parent="Space"]
 position = Vector2( -164.048, -122.826 )
-texture = ExtResource( 6 )
+texture = ExtResource( 8 )
