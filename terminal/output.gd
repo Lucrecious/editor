@@ -3,7 +3,8 @@ extends Label
 var buffer := []
 
 func _ready() -> void:
-	pass
+	var font := get_theme().default_font
+	max_lines_visible = int(rect_size.y / font.get_height()) - 1
 
 func put(lines : Array) -> void:
 	for line in lines:
@@ -13,10 +14,8 @@ func _add_line(line : String) -> void:
 	buffer.push_front(line)
 	var font := get_theme().default_font
 	
-	var h = font.get_height() * (buffer.size() + 1)
-	
-	if h >= rect_size.y:
-		buffer.pop_back()
+	if buffer.size() >= max_lines_visible:
+		buffer.resize(max_lines_visible)
 	
 	var display = buffer.duplicate()
 	display.invert()

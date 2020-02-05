@@ -15,7 +15,7 @@ func unfocus():
 	command.release_focus()
 
 func _pressed_enter(text : String) -> void:
-	text = text.strip_edges()
+	text = text.strip_edges().to_lower()
 	if text.empty(): return;
 	
 	var result = _parse(text)
