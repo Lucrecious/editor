@@ -10,4 +10,6 @@ func _on_Terminal_command_entered(command : Dictionary) -> void:
 	
 	match cmd:
 		EditorCommands.Unknown:
-			_terminal.output.put([str(OS.get_ticks_msec())])
+			_terminal.output.put(['Uknown command!'])
+		EditorCommands.CreateRegion:
+			_terminal.output.put(['Region created'])
