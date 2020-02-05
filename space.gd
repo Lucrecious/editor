@@ -6,7 +6,7 @@ onready var grid := LutUtils.get_child_by_type(self, EditorGrid) as EditorGrid
 func _ready():
 	grid.set_view(view.get_rect2())
 
-func _input(event : InputEvent) -> void:
+func _unhandled_input(event : InputEvent) -> void:
 	if Input.is_action_just_pressed("editor_zoom_in"):
 		view.magnify(1.3)
 	elif Input.is_action_just_pressed("editor_zoom_out"):

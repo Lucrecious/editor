@@ -9,6 +9,12 @@ var history_max = 11
 func _ready():
 	command.connect("text_entered", self, "_pressed_enter")
 
+func focus():
+	command.grab_focus()
+
+func unfocus():
+	command.release_focus()
+
 func _pressed_enter(text : String) -> void:
 	var result = _command(text)
 	
