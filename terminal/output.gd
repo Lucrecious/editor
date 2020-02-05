@@ -18,7 +18,9 @@ func _add_line(line : String) -> void:
 	if h >= rect_size.y:
 		buffer.pop_back()
 	
-	text = LutUtils.join(buffer, "\n")
+	var display = buffer.duplicate()
+	display.invert()
+	text = LutUtils.join(display, "\n")
 
 
 
