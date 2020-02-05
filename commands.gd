@@ -2,5 +2,10 @@ extends Reference
 
 class_name EditorCommands
 
-const Unknown := 0
-const CreateRegion := 1
+const Unknown := "unknown"
+const Create := "create"
+const RegionParam = "region"
+const At := "at"
+const DefaultParam := "default"
+const CursorParam := "cursor"
+

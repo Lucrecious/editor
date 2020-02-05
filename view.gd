@@ -15,6 +15,11 @@ func magnify(factor : float) -> void:
 func shrink(factor : float) -> void:
 	zoom = min(zoom_max, zoom * factor)
 
+func to_world(screen_pos : Vector2) -> Vector2:
+	screen_pos -= Vector2(.5, .5)
+	var coverage := (camera.get_viewport_rect().size * zoom) as Vector2
+	return coverage * screen_pos + global_position
+
 func get_rect2() -> Rect2:
 	var rect2 := Rect2()
 	

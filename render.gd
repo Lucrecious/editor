@@ -4,8 +4,7 @@ onready var grid := LutUtils.get_child_by_type(get_parent(), EditorGrid) as Edit
 onready var regions := LutUtils.get_child_by_type(get_parent(), EditorRegions) as EditorRegions
 
 func _ready() -> void:
-	# connect region updates to this
-	return
+	regions.connect("regions_changed", self, "update")
 
 func _draw() -> void:
 	_draw_regions()

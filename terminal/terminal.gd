@@ -26,13 +26,33 @@ func _pressed_enter(text : String) -> void:
 func _parse(command : String) -> Dictionary:
 	assert(not command.strip_edges().empty())
 	
-	var parsed = { 'cmd' : EditorCommands.Unknown, 'params' : [] }
+	var cmd = { 'cmd' : EditorCommands.Unknown, 'params' : [] }
 	
 	var split = command.split(' ')
-	if split[0] == 'create':
-		parsed['cmd'] = EditorCommands.CreateRegion
+	if split[0] == EditorCommands.Create:
+		split.remove(0)
+		var create_cmd = _parse_create(split)
+		if not create_cmd: return cmd
+		return create_cmd
 	
-	return parsed
+	return cmd
+
+func _parse_create(params : Array):
+	if params.empty(): return null
+	
+	if params[0] == EditorCommands.RegionParam:
+		var location := EditorCommands.DefaultParam
+		if params.size() >= 3\
+		and params[1] == EditorCommands.At\
+		and params[2] == EditorCommands.CursorParam:
+			location = EditorCommands.CursorParam
+		
+		return {
+			'cmd' : EditorCommands.Create,
+			'params' : [EditorCommands.RegionParam, location]
+		}
+	
+	return null
 
 
 

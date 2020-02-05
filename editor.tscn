@@ -31,6 +31,5 @@ script = ExtResource( 5 )
 [node name="Regions" parent="Space" instance=ExtResource( 8 )]
 
 [node name="Sprite" type="Sprite" parent="Space"]
-position = Vector2( -164.048, -122.826 )
 texture = ExtResource( 9 )
 [connection signal="command_entered" from="HUD/Terminal" to="." method="_on_Terminal_command_entered"]

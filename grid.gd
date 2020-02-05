@@ -17,6 +17,19 @@ func set_view(rect : Rect2) -> void:
 func to_pixels(coords : Vector2) -> Vector2:
 	return coords * _units
 
+func to_coords(pixels : Vector2) -> Vector2:
+	var coords := Vector2(
+		pixels.x / Constants.BLOCK_SIZE,
+		pixels.y / Constants.BLOCK_SIZE)
+	
+	if coords.x < 0: coords.x -= 1
+	if coords.y < 0: coords.y -= 1
+	
+	coords.x = int(coords.x)
+	coords.y = int(coords.y)
+	
+	return coords
+
 func set_color(color : Color):
 	_color = color
 	update()
