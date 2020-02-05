@@ -7,8 +7,6 @@ onready var _regions := $Space/Regions as EditorRegions
 onready var _view := $Space/View as EditorView
 onready var _grid := $Space/Grid as EditorGrid
 
-var x = 0
-
 func _on_Terminal_command_entered(command : Dictionary) -> void:
 	var cmd = command['cmd']
 	if cmd == null: return

@@ -28,7 +28,7 @@ custom_constants/separation = 0
 
 [node name="Output" type="Label" parent="Text"]
 margin_right = 230.0
-margin_bottom = 125.0
+margin_bottom = 128.0
 rect_min_size = Vector2( 50, 100 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -40,7 +40,7 @@ clip_text = true
 script = ExtResource( 3 )
 
 [node name="Command" type="LineEdit" parent="Text"]
-margin_top = 125.0
+margin_top = 128.0
 margin_right = 230.0
 margin_bottom = 150.0
 rect_min_size = Vector2( 50, 20 )
