@@ -6,10 +6,26 @@ signal regions_changed
 
 var _regions := []
 
-func create(pos : Vector2, size := Vector2(1, 1)) -> int:
-	_regions.append(Rect2(pos, size))
+var _update_regions_ref := funcref(self, "_update_regions")
+
+func _update_regions() -> void:
 	emit_signal("regions_changed")
-	return _regions.size() - 1
+
+func create(pos : Vector2, size := Vector2(1, 1)) -> EditorRegion:
+	_regions.append(
+		EditorRegion.new(
+			_update_regions_ref,
+			Rect2(pos, size)))
+	_update_regions()
+	return _regions.back()
+
+func get_at(coords : Vector2) -> EditorRegion:
+	for i in range(_regions.size()-1, -1, -1):
+		var region := _regions[i] as EditorRegion
+		if region.has_point(coords):
+			return region
+	
+	return null
 
 func all() -> Array:
 	return _regions.duplicate()
