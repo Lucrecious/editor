@@ -27,21 +27,30 @@ func _draw_regions() -> void:
 
 func _draw_selected_boxes():
 	var selected := _editor.get_selected()
+	
 	for select in selected:
 		if select is EditorRegion:
-			_draw_bounding_box(select as EditorRegion)
+			_draw_region_select(select as EditorRegion)
+	
+	if not selected.empty():
+		_select_first(selected.front())
 
-func _draw_bounding_box(region : EditorRegion) -> void:
+func _select_first(select):
+	if select is EditorRegion:
+		_draw_region_transformation_hints(select as EditorRegion)
+
+func _draw_region_transformation_hints(region : EditorRegion) -> void:
+	var pos = region.movement_hint_position()
+	var size = region.movement_hint_size()
+	
+	draw_circle(_grid.to_pixels(pos), size * _view.get_zoom(), Color.black)
+
+func _draw_region_select(region : EditorRegion) -> void:
 	var rect := region.bounding_box()
 	rect.position = _grid.to_pixels(rect.position)
 	rect.size = _grid.to_pixels(rect.size)
 	
-	var pos = region.movement_hint_position()
-	var size = region.movement_hint_size()
-	
 	draw_rect(rect.grow(3 * _view.get_zoom()), Color.yellow, false)
-	
-	draw_circle(_grid.to_pixels(pos), size * _view.get_zoom(), Color.black)
 
 
 

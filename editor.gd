@@ -17,10 +17,14 @@ var _selected := []
 
 func _ready() -> void:
 	_grid.set_view(_view.get_rect2())
-	fsm.add_transition(state_idle, state_move_view, to_move_view)
-	fsm.add_transition(state_move_view, state_idle, from_move_view)
 	
-	fsm.state(state_idle)
+	fsm.add_transition(_state_idle, _state_move_selected, _to_move_selected)
+	fsm.add_transition(_state_move_selected, _state_idle, _from_move_selected)
+	
+	fsm.add_transition(_state_idle, _state_move_view, _to_move_view)
+	fsm.add_transition(_state_move_view, _state_idle, _from_move_view)
+	
+	fsm.state(_state_idle)
 
 func get_selected() -> Array:
 	return _selected.duplicate()
@@ -67,9 +71,9 @@ func _get_create_position(location : String) -> Vector2:
 	var default := _view.to_world(Vector2(.756, .51))
 	return _grid.to_coords(default)
 
-var state_idle := FSMQuickState.new(fsm)\
-	.add_main(self, "state_idle_main")
-func state_idle_main() -> void:
+var _state_idle := FSMQuickState.new(fsm)\
+	.add_main(self, "_state_idle_main")
+func _state_idle_main() -> void:
 	if Input.is_action_just_pressed("editor_zoom_in"):
 		_view.magnify(1.3)
 	elif Input.is_action_just_pressed("editor_zoom_out"):
@@ -78,7 +82,7 @@ func state_idle_main() -> void:
 		var add := Input.is_action_pressed("editor_modifier")
 		_select(add)
 
-var state_move_view := FSMQuickState.new(fsm)\
+var _state_move_view := FSMQuickState.new(fsm)\
 	.add_main(self, "_state_move_view_main")
 func _state_move_view_main() -> void:
 	if _event_current is InputEventMouseMotion:
@@ -87,16 +91,64 @@ func _state_move_view_main() -> void:
 	
 	_grid.set_view(_view.get_rect2())
 
-var to_move_view := FSMQuickTransition.new(fsm)\
+var _state_move_selected := FSMQuickState.new(fsm)\
+	.add_data({'alt_coords' : Vector2()})\
+	.add_enter(self, "_state_move_selected_enter")\
+	.add_main(self, "_state_move_selected_main")
+func _state_move_selected_enter(from : FSMState) -> void:
+	_state_move_selected.data['alt_coords'] = _grid.to_coords(get_global_mouse_position())
+func _state_move_selected_main() -> void:
+	if not _event_current is InputEventMouseMotion: return
+	var event := _event_current as InputEventMouseMotion
+	
+	var _last_alt_coords := _state_move_selected.data['alt_coords'] as Vector2
+	var _now_alt_coords := _grid.to_coords(get_global_mouse_position())
+	
+	var delta := _now_alt_coords - _last_alt_coords
+	
+	_state_move_selected.data['alt_coords'] = _now_alt_coords
+	
+	_move_selected(delta)
+
+func _move_selected(delta : Vector2) -> void:
+	assert(not _selected.empty())
+	
+	for select in _selected:
+		select.move(delta)
+
+var _to_move_view := FSMQuickTransition.new(fsm)\
 	.set_evaluation(self, "_to_move_view_evaluation")
 func _to_move_view_evaluation() -> bool:
 	return Input.is_action_just_pressed("editor_alt")
 
-var from_move_view := FSMQuickTransition.new(fsm)\
+var _from_move_view := FSMQuickTransition.new(fsm)\
 	.set_evaluation(self, "_from_move_view_evaluation")
 func _from_move_view_evaluation() -> bool:
 	return Input.is_action_just_released("editor_alt")
 
+var _to_move_selected := FSMQuickTransition.new(fsm)\
+	.set_evaluation(self, "_to_move_selected_evaluation")
+func _to_move_selected_evaluation() -> bool:
+	if not Input.is_action_just_pressed("editor_alt"): return false
+	if _selected.empty(): return false
+	
+	var select = _selected.front()
+	if select is EditorRegion:
+		return _is_moving_region(select as EditorRegion)
+	
+	return false
+
+func _is_moving_region(region : EditorRegion) -> bool:
+	var movement_hint_pos := region.movement_hint_position()
+	movement_hint_pos = _grid.to_pixels(movement_hint_pos)
+	var mouse_pos := get_global_mouse_position()
+	var distance := (movement_hint_pos - mouse_pos).length()
+	return distance < region.movement_hint_size() * _view.get_zoom()
+
+var _from_move_selected := FSMQuickTransition.new(fsm)\
+	.set_evaluation(self, "_from_move_selected_evaluation")
+func _from_move_selected_evaluation() -> bool:
+	return Input.is_action_just_released("editor_alt")
 
 
 
