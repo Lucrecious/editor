@@ -17,3 +17,13 @@ func bounding_box() -> Rect2:
 
 func rect() -> Rect2:
 	return _rect
+
+func movement_hint_position() -> Vector2:
+	return _rect.position + Vector2(.5, .5)
+
+func movement_hint_size() -> int:
+	return 3
+
+
+
+

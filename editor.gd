@@ -33,7 +33,6 @@ func _select(add : bool) -> void:
 		else:
 			_selected.append(region)
 	
-	
 	emit_signal("selected_changed")
 
 func _on_Terminal_command_entered(command : Dictionary) -> void:
