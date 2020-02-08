@@ -3,11 +3,11 @@
 [ext_resource path="res://src/editor/editor.gd" type="Script" id=1]
 [ext_resource path="res://src/editor/hud.gd" type="Script" id=2]
 [ext_resource path="res://src/editor/terminal/terminal.tscn" type="PackedScene" id=3]
-[ext_resource path="res://src/editor/render.gd" type="Script" id=4]
-[ext_resource path="res://src/editor/view.tscn" type="PackedScene" id=5]
-[ext_resource path="res://src/editor/grid.tscn" type="PackedScene" id=6]
-[ext_resource path="res://src/editor/regions.tscn" type="PackedScene" id=7]
-[ext_resource path="res://icon.png" type="Texture" id=8]
+[ext_resource path="res://icon.png" type="Texture" id=4]
+[ext_resource path="res://src/editor/render.gd" type="Script" id=5]
+[ext_resource path="res://src/editor/view.tscn" type="PackedScene" id=6]
+[ext_resource path="res://src/editor/grid.tscn" type="PackedScene" id=7]
+[ext_resource path="res://src/editor/regions.tscn" type="PackedScene" id=8]
 
 [node name="Editor" type="Node2D"]
 script = ExtResource( 1 )
@@ -19,15 +19,15 @@ script = ExtResource( 2 )
 
 [node name="Space" type="Node2D" parent="."]
 
-[node name="Render" type="Node2D" parent="Space"]
-script = ExtResource( 4 )
-
-[node name="View" parent="Space" instance=ExtResource( 5 )]
-
-[node name="Grid" parent="Space" instance=ExtResource( 6 )]
-
-[node name="Regions" parent="Space" instance=ExtResource( 7 )]
-
 [node name="Sprite" type="Sprite" parent="Space"]
-texture = ExtResource( 8 )
+texture = ExtResource( 4 )
+
+[node name="Render" type="Node2D" parent="Space"]
+script = ExtResource( 5 )
+
+[node name="View" parent="Space" instance=ExtResource( 6 )]
+
+[node name="Grid" parent="Space" instance=ExtResource( 7 )]
+
+[node name="Regions" parent="Space" instance=ExtResource( 8 )]
 [connection signal="command_entered" from="HUD/Terminal" to="." method="_on_Terminal_command_entered"]

@@ -21,6 +21,9 @@ func _ready() -> void:
 	fsm.add_transition(_state_idle, _state_move_selected, _to_move_selected)
 	fsm.add_transition(_state_move_selected, _state_idle, _from_move_selected)
 	
+	fsm.add_transition(_state_idle, _state_scale_selected, _to_scale_selected)
+	fsm.add_transition(_state_scale_selected, _state_idle, _from_scale_selected)
+	
 	fsm.add_transition(_state_idle, _state_move_view, _to_move_view)
 	fsm.add_transition(_state_move_view, _state_idle, _from_move_view)
 	
@@ -116,6 +119,48 @@ func _move_selected(delta : Vector2) -> void:
 	for select in _selected:
 		select.move(delta)
 
+var _state_scale_selected := FSMQuickState.new(fsm)\
+	.add_data({'alt_pos': Vector2(), 'scale': Vector2()})\
+	.add_enter(self, '_state_scale_selected_enter')\
+	.add_main(self, '_state_scale_selected_main')
+func _state_scale_selected_enter(from_state : FSMState) -> void:
+	_state_scale_selected.data['alt_pos'] = get_global_mouse_position()
+	_state_scale_selected.data['scale'] = _selected.front().rect().size
+func _state_scale_selected_main() -> void:
+	if not _event_current is InputEventMouseMotion: return
+	var event := _event_current as InputEventMouseMotion
+	
+	var _last_alt_coords := _state_scale_selected.data['alt_pos'] as Vector2
+	var _now_alt_coords := get_global_mouse_position()
+	
+	var delta := _now_alt_coords - _last_alt_coords
+	
+	_scale_selected(delta)
+
+func _scale_selected(delta : Vector2):
+	var region := _selected.front() as EditorRegion
+	var scale = _state_scale_selected.data['scale']
+	var delta_grid = _grid.to_coords(delta)
+	
+	region.set_scale(scale + delta_grid)
+
+var _to_scale_selected := FSMQuickTransition.new(fsm)\
+	.set_evaluation(self, "_to_scale_selected_evaluation")
+func _to_scale_selected_evaluation() -> bool:
+	if not Input.is_action_just_pressed("editor_alt"): return false
+	if _selected.empty(): return false
+	
+	var select = _selected.front()
+	if select is EditorRegion:
+		return _is_scaling_region(select as EditorRegion)
+	
+	return false
+
+var _from_scale_selected := FSMQuickTransition.new(fsm)\
+	.set_evaluation(self, "_from_scale_selected_evaluation")
+func _from_scale_selected_evaluation() -> bool:
+	return Input.is_action_just_released("editor_alt")
+
 var _to_move_view := FSMQuickTransition.new(fsm)\
 	.set_evaluation(self, "_to_move_view_evaluation")
 func _to_move_view_evaluation() -> bool:
@@ -138,18 +183,22 @@ func _to_move_selected_evaluation() -> bool:
 	
 	return false
 
-func _is_moving_region(region : EditorRegion) -> bool:
-	var movement_hint_pos := region.movement_hint_position()
-	movement_hint_pos = _grid.to_pixels(movement_hint_pos)
-	var mouse_pos := get_global_mouse_position()
-	var distance := (movement_hint_pos - mouse_pos).length()
-	return distance < region.movement_hint_size() * _view.get_zoom()
-
 var _from_move_selected := FSMQuickTransition.new(fsm)\
 	.set_evaluation(self, "_from_move_selected_evaluation")
 func _from_move_selected_evaluation() -> bool:
 	return Input.is_action_just_released("editor_alt")
 
+func _is_moving_region(region : EditorRegion) -> bool:
+	return _cursor_within(region.movement_hint_position(), region.movement_hint_size())
+
+func _is_scaling_region(region : EditorRegion) -> bool:
+	return _cursor_within(region.scale_hint_position(), region.scale_hint_size())
+
+func _cursor_within(pos : Vector2, max_distance : float) -> bool:
+	var cpos := _grid.to_pixels(pos)
+	var mpos := get_global_mouse_position()
+	var distance := (cpos - mpos).length()
+	return distance < _grid.to_pixelsf(max_distance) * _view.get_zoom()
 
 
 

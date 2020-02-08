@@ -40,10 +40,13 @@ func _select_first(select):
 		_draw_region_transformation_hints(select as EditorRegion)
 
 func _draw_region_transformation_hints(region : EditorRegion) -> void:
-	var pos = region.movement_hint_position()
-	var size = region.movement_hint_size()
+	var pos := _grid.to_pixels(region.movement_hint_position())
+	var size := _grid.to_pixelsf(region.movement_hint_size()) * _view.get_zoom()
+	draw_circle(pos, size, Color.black)
 	
-	draw_circle(_grid.to_pixels(pos), size * _view.get_zoom(), Color.black)
+	pos = _grid.to_pixels(region.scale_hint_position())
+	size = _grid.to_pixelsf(region.scale_hint_size()) * _view.get_zoom()
+	draw_circle(pos, size, Color.black)
 
 func _draw_region_select(region : EditorRegion) -> void:
 	var rect := region.bounding_box()

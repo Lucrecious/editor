@@ -13,6 +13,10 @@ func move(delta : Vector2) -> void:
 	_rect.position += delta
 	_update_regions.call_func()
 
+func set_scale(scale : Vector2) -> void:
+	_rect.size = Vector2(int(scale.x), int(scale.y))
+	_update_regions.call_func()
+
 func has_point(point : Vector2) -> bool:
 	return _rect.has_point(point)
 
@@ -23,10 +27,16 @@ func rect() -> Rect2:
 	return _rect
 
 func movement_hint_position() -> Vector2:
-	return _rect.position + Vector2(.5, .5)
+	return _rect.position + _rect.size / 2
 
-func movement_hint_size() -> int:
-	return 5
+func movement_hint_size() -> float:
+	return .125
+
+func scale_hint_position() -> Vector2:
+	return _rect.end
+
+func scale_hint_size() -> float:
+	return .125
 
 
 
