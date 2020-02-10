@@ -79,17 +79,19 @@ func _get_mask_value(layout : Dictionary, coords : Vector2) -> int:
 	return int(layout.get(coords, TileMap.INVALID_CELL) != TileMap.INVALID_CELL)
 
 class Pattern extends Reference:
-	var _ids := []
+	var _ids := {}
 	var _bitmask : int
 	func _init(bitmask):
 		_bitmask = bitmask
 	
 	func add_id(id : int) -> void:
-		_ids.append(id)
+		_ids[id] = true
 	
 	func get_id() -> int:
 		assert(not _ids.empty())
-		return _ids[randi() % _ids.size()]
+		var keys = _ids.keys()
+		var key = keys[keys.size() % randi()]
+		return _ids[key]
 	
 	func data() -> int: return _bitmask
 	
