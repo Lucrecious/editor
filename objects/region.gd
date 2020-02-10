@@ -10,10 +10,16 @@ func _init(update_regions : FuncRef, rect : Rect2):
 	_rect = rect
 
 func move(delta : Vector2) -> void:
+	delta = Vector2(int(delta.x), int(delta.y))
+	if delta.x == 0 and delta.y == 0: return
 	_rect.position += delta
 	_update_regions.call_func()
 
 func set_scale(scale : Vector2) -> void:
+	scale = Vector2(max(1, int(scale.x)), max(1, int(scale.y)))
+	
+	if (_rect.size - scale).length() == 0: return
+	
 	_rect.size = Vector2(max(1, int(scale.x)), max(1, int(scale.y)))
 	_update_regions.call_func()
 

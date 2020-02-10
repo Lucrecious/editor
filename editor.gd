@@ -9,6 +9,7 @@ onready var _regions := $Space/Regions as EditorRegions
 onready var _view := $Space/View as EditorView
 onready var _grid := $Space/Grid as EditorGrid
 onready var _tiles := $Tiles
+onready var _render := $Space/Render
 
 var fsm := FSM.new()
 
@@ -16,7 +17,18 @@ var _event_current
 
 var _selected := []
 
+func _connect_drawing_updates() -> void:
+	_regions.connect('regions_changed', self, '_update_tilemaps')
+	_regions.connect("regions_changed", _render, "update")
+	connect("selected_changed", _render, "update")
+	_view.connect("view_changed", _render, "update")
+
+func _update_tilemaps() -> void:
+	_tiles.draw_regions('grass', _regions.all())
+
 func _ready() -> void:
+	_connect_drawing_updates()
+	
 	_grid.set_view(_view.get_rect2())
 	
 	fsm.add_transition(_state_idle, _state_move_selected, _to_move_selected)

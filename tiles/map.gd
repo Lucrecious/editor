@@ -52,7 +52,8 @@ func _ignore_uncovered_corner(bitmask : int, corner_i : int, edge1_i : int, edge
 	var bit1 := bool(LutMath.get_bit(bitmask, edge1_i))
 	var bit2 := bool(LutMath.get_bit(bitmask, edge2_i))
 	
-	bitmask = LutMath.set_bit(bitmask, corner_i, int(bit1 and bit2))
+	if not (bit1 and bit2):
+		bitmask = LutMath.set_bit(bitmask, corner_i, 0)
 	
 	return bitmask
 
@@ -68,7 +69,7 @@ func _get_bitmask(layout : Dictionary, coords : Vector2) -> int:
 		_get_mask_value(layout, coords + Vector2(0, 1)),
 		_get_mask_value(layout, coords + Vector2(1, 1))
 	]
-	
+
 	for i in range(Bits.size()):
 		bitmask += Bits[i] * mask[i]
 	
