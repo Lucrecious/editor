@@ -14,7 +14,7 @@ func move(delta : Vector2) -> void:
 	_update_regions.call_func()
 
 func set_scale(scale : Vector2) -> void:
-	_rect.size = Vector2(int(scale.x), int(scale.y))
+	_rect.size = Vector2(max(1, int(scale.x)), max(1, int(scale.y)))
 	_update_regions.call_func()
 
 func has_point(point : Vector2) -> bool:

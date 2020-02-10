@@ -4,15 +4,17 @@ onready var _editor := get_parent().get_parent() as GameEditor
 onready var _grid := LutUtils.get_child_by_type(get_parent(), EditorGrid) as EditorGrid
 onready var _regions := LutUtils.get_child_by_type(get_parent(), EditorRegions) as EditorRegions
 onready var _view := LutUtils.get_child_by_type(get_parent(), EditorView) as EditorView
-
+onready var _tiles := LutUtils.get_child_by_type(_editor, EditorTiles) as EditorTiles
 func _ready() -> void:
 	_regions.connect("regions_changed", self, "update")
 	_editor.connect("selected_changed", self, "update")
 	_view.connect("view_changed", self, "update")
+	
 
 func _draw() -> void:
-	_draw_regions()	
+	#_draw_regions()	
 	_draw_selected_boxes()
+	_tiles.draw_regions('grass', _regions.all())
 
 func _draw_regions() -> void:
 	var regions := _regions.all()

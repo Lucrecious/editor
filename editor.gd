@@ -8,6 +8,7 @@ onready var _terminal := $HUD/Terminal
 onready var _regions := $Space/Regions as EditorRegions
 onready var _view := $Space/View as EditorView
 onready var _grid := $Space/Grid as EditorGrid
+onready var _tiles := $Tiles
 
 var fsm := FSM.new()
 
