@@ -8,6 +8,7 @@ class_name EditorTilesetMap
 const Bits := [1, 2, 4, 8, 16, 32, 64, 128]
 
 var _patterns := {}
+var _bitmask_rules := {}
 var _default_id := TileMap.INVALID_CELL
 
 func set_ids(tiles : Dictionary) -> Dictionary:
@@ -16,6 +17,10 @@ func set_ids(tiles : Dictionary) -> Dictionary:
 	for coord in coords:
 		var bitmask := _get_bitmask(tiles, coord)
 		bitmask = _ignore_uncovered_corners(bitmask)
+		
+		if bitmask in _bitmask_rules:
+			_apply_bitmask_rule(ids, bitmask, coord)
+		
 		var pattern := _patterns.get(bitmask) as Pattern
 		if not pattern:
 			ids[coord] = _default_id
@@ -24,9 +29,24 @@ func set_ids(tiles : Dictionary) -> Dictionary:
 	
 	return ids
 
-func _init(layout : Dictionary, default_id : int) -> void:
+func _apply_bitmask_rule(tiles : Dictionary, bitmask : int, coord : Vector2) -> void:
+	assert(bitmask in _bitmask_rules)
+	var ids := _bitmask_rules[bitmask] as Array
+	var rule := ids[randi() % ids.size()] as Dictionary
+	tiles[coord + rule['relative']] = rule['id']
+	
+	
+
+func _init(layout : Dictionary, bitmask_rules : Array, default_id : int) -> void:
 	_create_patterns(layout)
+	_fill_bitmask_rules(bitmask_rules)
 	_default_id = default_id
+
+func _fill_bitmask_rules(rules : Array) -> void:
+	for r in rules:
+		var rs = _bitmask_rules.get(r['bitmask'], [])
+		rs.append({ 'id' : r['id'], 'relative' : r['relative'] })
+		_bitmask_rules[r['bitmask']] = rs
 
 func _create_patterns(layout : Dictionary) -> void:
 	for coord in layout.keys():
@@ -90,8 +110,8 @@ class Pattern extends Reference:
 	func get_id() -> int:
 		assert(not _ids.empty())
 		var keys = _ids.keys()
-		var key = keys[keys.size() % randi()]
-		return _ids[key]
+		var key = keys[randi() % keys.size()]
+		return key
 	
 	func data() -> int: return _bitmask
 	
