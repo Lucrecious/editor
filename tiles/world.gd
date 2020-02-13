@@ -8,6 +8,13 @@ onready var _tilemaps := $Setup/TileMaps
 func _ready() -> void:
 	$Setup.visible = false
 
+func map_exists_for_tileset(tileset : String) -> bool:
+	return tileset in _maps
+
+func clear_tilemaps() -> void:
+	for tilemap in LutUtils.get_children_by_type(_tilemaps, TileMap):
+		tilemap.clear()
+
 func draw_regions(name : String, regions : Array) -> bool:
 	var map := _maps.get(name) as EditorTilesetMap
 	if not map:
@@ -52,6 +59,7 @@ func _add_tilemaps(tilemap_names : Array) -> Dictionary:
 	
 		var new_tilemap := packed.instance() as TileMap
 		add_child(new_tilemap)
+		new_tilemap.clear()
 		tilemaps[n] = new_tilemap
 	
 	_sort_tilemaps(LutUtils.get_children_by_type(self, TileMap))

@@ -8,7 +8,7 @@ onready var _terminal := $HUD/Terminal
 onready var _regions := $Space/Regions as EditorRegions
 onready var _view := $Space/View as EditorView
 onready var _grid := $Space/Grid as EditorGrid
-onready var _tiles := $World
+onready var _world := $World
 onready var _render := $Space/Render
 
 var fsm := FSM.new()
@@ -24,7 +24,22 @@ func _connect_drawing_updates() -> void:
 	_view.connect("view_changed", _render, "update")
 
 func _update_tilemaps() -> void:
-	_tiles.draw_regions('grass', _regions.all())
+	_world.clear_tilemaps()
+	var region_groups := _get_region_groups()
+	for region_group in region_groups.keys():
+		_world.draw_regions(region_group, region_groups[region_group])
+
+func _get_region_groups() -> Dictionary:
+	var region_groups := {}
+	
+	for region in _regions.all():
+		var tileset := (region as EditorRegion).get_tileset()
+		if not tileset: continue
+		var group := region_groups.get(tileset, []) as Array
+		group.append(region)
+		region_groups[tileset] = group
+	
+	return region_groups
 
 func _ready() -> void:
 	_connect_drawing_updates()
