@@ -18,17 +18,17 @@ func _create_tilesets() -> void:
 
 func _create_map(ref_rect : EditorTilesetGroup) -> EditorTilesetMap:
 	var rect := Rect2(ref_rect.rect_position, ref_rect.rect_size)
-	var exempts := _get_exempts(ref_rect.get_children())
+	var exempts := _get_bitmask_rules(ref_rect.get_children())
 	var tiles := _get_tiles_for_group(rect, exempts)
 	var map := EditorTilesetMap.new(ref_rect.tilemap().name, tiles, exempts.values(), -1)
 	return map
 
-func _get_exempts(exempts : Array) -> Dictionary:
+func _get_bitmask_rules(bitmask_rules : Array) -> Dictionary:
 	var ids := {}
 	
-	for rule in exempts:
-		var id := (rule as EditorTilemapBitmaskRule).get_id()
-		ids[id['coord']] = id
+	for rule in bitmask_rules:
+		var coord := rule.get_coord() as Vector2
+		ids[coord] = rule
 	
 	return ids
 

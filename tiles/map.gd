@@ -12,34 +12,42 @@ var _patterns := {}
 var _bitmask_rules := {}
 var _default_id := TileMap.INVALID_CELL
 
-func set_ids(tiles : Dictionary) -> Dictionary:
-	var ids := {}
-	var coords := tiles.keys()
-	for coord in coords:
-		var bitmask := _get_bitmask(tiles, coord)
+func get_required_tilemaps() -> Array:
+	var tilemaps := { _tilemap_name : true }
+	for bitmask_rules in _bitmask_rules.values():
+		for rule in bitmask_rules:
+			var tilemap_name = rule.get_tilemap_name()
+			tilemaps[tilemap_name] = true
+	
+	return tilemaps.keys()
+
+func set_ids(tilemaps : Dictionary, layout : Dictionary) -> void:
+	var tilemap := tilemaps[tilemap_name()] as TileMap
+	for coord in layout.keys():
+		var bitmask := _get_bitmask(layout, coord)
 		bitmask = _ignore_uncovered_corners(bitmask)
 		
 		if bitmask in _bitmask_rules:
-			_apply_bitmask_rule(ids, bitmask, coord)
+			_apply_bitmask_rule(tilemaps, bitmask, coord)
 		
 		var pattern := _patterns.get(bitmask) as Pattern
 		if not pattern:
-			ids[coord] = _default_id
+			tilemap.set_cellv(coord, _default_id)
 			continue
 		
 		var id := pattern.get_id()
-		ids[coord] = id
+		tilemap.set_cellv(coord, id)
 	
-	return ids
 
 func tilemap_name() -> String:
 	return _tilemap_name
 
-func _apply_bitmask_rule(tiles : Dictionary, bitmask : int, coord : Vector2) -> void:
+func _apply_bitmask_rule(tilemaps : Dictionary, bitmask : int, coord : Vector2) -> void:
 	assert(bitmask in _bitmask_rules)
 	var ids := _bitmask_rules[bitmask] as Array
-	var rule := ids[randi() % ids.size()] as Dictionary
-	tiles[coord + rule['relative']] = rule['id']
+	var rule := ids[randi() % ids.size()] as EditorTilemapBitmaskRule
+	tilemaps[rule.get_tilemap_name()].set_cellv(
+		coord + rule.get_relative(), rule.get_id())
 
 func _init(tilemap_name : String, layout : Dictionary, bitmask_rules : Array, default_id : int) -> void:
 	_tilemap_name = tilemap_name
@@ -49,9 +57,9 @@ func _init(tilemap_name : String, layout : Dictionary, bitmask_rules : Array, de
 
 func _fill_bitmask_rules(rules : Array) -> void:
 	for r in rules:
-		var rs = _bitmask_rules.get(r['bitmask'], [])
-		rs.append({ 'id' : r['id'], 'relative' : r['relative'] })
-		_bitmask_rules[r['bitmask']] = rs
+		var rs = _bitmask_rules.get(r.get_bitmask(), [])
+		rs.append(r)
+		_bitmask_rules[r.get_bitmask()] = rs
 
 func _create_patterns(layout : Dictionary) -> void:
 	for coord in layout.keys():
@@ -101,7 +109,7 @@ func _get_bitmask(layout : Dictionary, coords : Vector2) -> int:
 	return bitmask
 
 func _get_mask_value(layout : Dictionary, coords : Vector2) -> int:
-	return int(layout.get(coords, TileMap.INVALID_CELL) != TileMap.INVALID_CELL)
+	return int(layout.get(coords, null) != null)
 
 class Pattern extends Reference:
 	var _ids := {}
@@ -112,7 +120,7 @@ class Pattern extends Reference:
 	func add_id(id : int) -> void:
 		_ids[id] = true
 	
-	func get_id() -> Dictionary:
+	func get_id() -> int:
 		assert(not _ids.empty())
 		var keys = _ids.keys()
 		var key = keys[randi() % keys.size()]

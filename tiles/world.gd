@@ -14,14 +14,15 @@ func draw_regions(name : String, regions : Array) -> bool:
 		assert(false)
 		return false
 	
-	var tilemap := get_node_or_null(map.tilemap_name()) as TileMap
-	if not tilemap:
-		tilemap = _add_tilemap(map.tilemap_name())
-		if not tilemap:
-			assert(false)
-			return false
+	var tilemap_names := map.get_required_tilemaps()
+	var tilemaps := _add_tilemaps(tilemap_names) as Dictionary
 	
-	tilemap.clear()
+	if tilemaps.empty():
+		assert(false)
+		return false
+	
+	for tilemap in tilemaps.values():
+		tilemap.clear()
 	
 	var aggregate := {}
 	
@@ -31,26 +32,54 @@ func draw_regions(name : String, regions : Array) -> bool:
 			var coord := Vector2(rect.position.x + dx, rect.position.y + dy)
 			aggregate[coord] = 0
 	
-	aggregate = map.set_ids(aggregate)
-	
-	for coord in aggregate.keys():
-		tilemap.set_cellv(coord, aggregate[coord])
+	map.set_ids(tilemaps, aggregate)
 	
 	return true
 
-func _add_tilemap(tilemap_name : String) -> TileMap:
-	var tilemap := _tilemaps.get_node_or_null(tilemap_name) as TileMap
-	if not tilemap:
-		assert(false)
-		return null
+func _add_tilemaps(tilemap_names : Array) -> Dictionary: 
+	var tilemaps := {}
+	for n in tilemap_names:
+		var tilemap := get_node_or_null(n) as TileMap
+		if tilemap:
+			tilemaps[n] = tilemap
+			continue
+			
+		tilemap = _tilemaps.get_node_or_null(n) as TileMap
+		if not tilemap: return {}
 	
-	var packed := PackedScene.new()
-	packed.pack(tilemap)
+		var packed := PackedScene.new()
+		packed.pack(tilemap)
 	
-	var new_tilemap := packed.instance() as TileMap
-	add_child(new_tilemap)
+		var new_tilemap := packed.instance() as TileMap
+		add_child(new_tilemap)
+		tilemaps[n] = new_tilemap
 	
-	return new_tilemap
+	_sort_tilemaps(LutUtils.get_children_by_type(self, TileMap))
+	
+	return tilemaps
+
+func _sort_tilemaps(tilemaps : Array) -> void:
+	var actual_order := []
+	for c in _tilemaps.get_children():
+		actual_order.append(c.name)
+	
+	tilemaps.sort_custom(TileMapSorter.new(actual_order), 'compare')
+	
+	for i in range(tilemaps.size()):
+		move_child(tilemaps[i], i)
+
+class TileMapSorter:
+	var _actual_order : Array
+	func _init(actual_order):
+		_actual_order = actual_order
+	
+	func compare(t1 : TileMap, t2 : TileMap) -> bool:
+		var t1i := _actual_order.find(t1.name)
+		assert(t1i != -1)
+		
+		var t2i := _actual_order.find(t2.name)
+		
+		return t1i < t2i
 
 func _get_required_map_names(regions : Array) -> Array:
 	var required_map_names := {}
