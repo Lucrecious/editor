@@ -11,6 +11,46 @@ var _update_regions_ref := funcref(self, "_update_regions")
 func _update_regions() -> void:
 	emit_signal("regions_changed")
 
+func get_region_coverage_map() -> Dictionary:
+	var coverage_map := {}
+	
+	for i in range(_regions.size()):
+		var r := _regions[i]  as EditorRegion
+		var coverage := _get_coverage_coords(r)
+		
+		for j in range(i):
+			coverage = _subtract_region(r, coverage, _regions[j])
+		
+		coverage_map[r] = coverage
+	
+	return coverage_map
+
+func _subtract_region(
+	region : EditorRegion,
+	coverage : Dictionary,
+	subtract_region : EditorRegion) -> Dictionary:
+		var rect := region.rect()
+		var subRect := subtract_region.rect()
+		
+		var clip := rect.clip(subRect)
+		
+		for x in range(clip.position.x, clip.end.x):
+			for y in range(clip.position.y, clip.end.y):
+				coverage.erase(Vector2(x, y))
+		
+		return coverage
+		
+
+func _get_coverage_coords(region : EditorRegion) -> Dictionary:
+	var coverage := {}
+	
+	var rect := region.rect()
+	for x in range(rect.position.x, rect.end.x):
+		for y in range(rect.position.y, rect.end.y):
+			coverage[Vector2(x, y)] = true
+	
+	return coverage
+
 func create(pos : Vector2, size := Vector2(1, 1)) -> EditorRegion:
 	_regions.append(
 		EditorRegion.new(

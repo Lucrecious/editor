@@ -25,11 +25,12 @@ func _connect_drawing_updates() -> void:
 
 func _update_tilemaps() -> void:
 	_world.clear_tilemaps()
-	var region_groups := _get_region_groups()
+	var coverage_map := _regions.get_region_coverage_map()
+	var region_groups := _get_region_groups(coverage_map)
 	for region_group in region_groups.keys():
-		_world.draw_regions(region_group, region_groups[region_group])
+		_world.draw_regions(region_group, coverage_map, region_groups[region_group])
 
-func _get_region_groups() -> Dictionary:
+func _get_region_groups(coverage_map : Dictionary) -> Dictionary:
 	var region_groups := {}
 	
 	for region in _regions.all():
