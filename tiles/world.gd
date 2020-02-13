@@ -12,7 +12,7 @@ func map_exists_for_tileset(tileset : String) -> bool:
 	return tileset in _maps
 
 func clear_tilemaps() -> void:
-	for tilemap in LutUtils.get_children_by_type(_tilemaps, TileMap):
+	for tilemap in LutUtils.get_children_by_type(self, TileMap):
 		tilemap.clear()
 
 func draw_regions(name : String, regions : Array) -> bool:
@@ -28,13 +28,10 @@ func draw_regions(name : String, regions : Array) -> bool:
 		assert(false)
 		return false
 	
-	for tilemap in tilemaps.values():
-		tilemap.clear()
-	
 	var aggregate := {}
 	
 	for region in regions:
-		var rect := (region as EditorRegion).rect()
+		var rect := region.rect() as Rect2
 		for dx in rect.size.x: for dy in rect.size.y:
 			var coord := Vector2(rect.position.x + dx, rect.position.y + dy)
 			aggregate[coord] = 0

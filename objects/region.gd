@@ -3,7 +3,7 @@ extends Reference
 class_name EditorRegion
 
 var _rect : Rect2
-var _tileset := 'grass'
+var _tileset := ''
 
 var _update_regions : FuncRef
 
@@ -16,6 +16,7 @@ func get_tileset() -> String:
 
 func set_tileset(tileset : String) -> void:
 	_tileset = tileset
+	_update_regions.call_func()
 
 func move(delta : Vector2) -> void:
 	delta = Vector2(int(delta.x), int(delta.y))

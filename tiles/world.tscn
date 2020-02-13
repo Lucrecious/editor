@@ -18,13 +18,13 @@ script = ExtResource( 2 )
 tile_set = ExtResource( 3 )
 cell_size = Vector2( 40, 40 )
 format = 1
-tile_data = PoolIntArray( 2, 154, 0, 3, 155, 0, 4, 156, 0, 5, 157, 0, 65538, 158, 0, 65539, 159, 0, 65540, 160, 0, 65541, 161, 0, 65546, 158, 0, 65547, 161, 0, 131074, 64, 0, 131075, 95, 0, 131076, 95, 0, 131077, 67, 0, 131081, 158, 0, 131082, 95, 0, 131083, 95, 0, 131084, 160, 0, 131085, 161, 0, 196610, 124, 0, 196611, 126, 0, 196612, 125, 0, 196613, 127, 0, 196617, 124, 0, 196618, 98, 0, 196619, 95, 0, 196620, 99, 0, 196621, 127, 0, 262154, 124, 0, 262155, 126, 0, 262156, 127, 0, 327687, 95, 0 )
+tile_data = PoolIntArray( 2, 154, 0, 3, 155, 0, 4, 156, 0, 5, 157, 0, 65538, 158, 0, 65539, 159, 0, 65540, 160, 0, 65541, 161, 0, 65546, 158, 0, 65547, 161, 0, 131074, 64, 0, 131075, 95, 0, 131076, 95, 0, 131077, 67, 0, 131081, 158, 0, 131082, 95, 0, 131083, 95, 0, 131084, 160, 0, 131085, 161, 0, 196610, 124, 0, 196611, 126, 0, 196612, 125, 0, 196613, 127, 0, 196617, 124, 0, 196618, 98, 0, 196619, 95, 0, 196620, 99, 0, 196621, 127, 0, 262154, 124, 0, 262155, 126, 0, 262156, 127, 0, 327687, 95, 0, 458755, 4, 0, 458756, 5, 0, 458757, 6, 0, 458758, 7, 0 )
 
 [node name="Forground1" type="TileMap" parent="Setup/TileMaps"]
 tile_set = ExtResource( 3 )
 cell_size = Vector2( 40, 40 )
 format = 1
-tile_data = PoolIntArray( 2, 128, 0, 3, 129, 0, 4, 128, 0, 5, 131, 0, 65538, 158, 0, 65539, 159, 0, 65540, 160, 0, 65541, 161, 0, 65546, 158, 0, 65547, 161, 0, 131074, 64, 0, 131075, 95, 0, 131076, 95, 0, 131077, 67, 0, 131081, 158, 0, 131082, 38, 0, 131083, 39, 0, 131084, 160, 0, 131085, 161, 0, 196610, 124, 0, 196611, 126, 0, 196612, 125, 0, 196613, 127, 0, 196617, 124, 0, 196618, 98, 0, 196619, 95, 0, 196620, 99, 0, 196621, 127, 0, 262154, 124, 0, 262155, 126, 0, 262156, 127, 0, 327687, 95, 0 )
+tile_data = PoolIntArray( 2, 128, 0, 3, 129, 0, 4, 128, 0, 5, 131, 0, 65538, 158, 0, 65539, 159, 0, 65540, 160, 0, 65541, 161, 0, 65546, 158, 0, 65547, 161, 0, 131074, 64, 0, 131075, 95, 0, 131076, 95, 0, 131077, 67, 0, 131081, 158, 0, 131082, 38, 0, 131083, 39, 0, 131084, 160, 0, 131085, 161, 0, 196610, 124, 0, 196611, 126, 0, 196612, 125, 0, 196613, 127, 0, 196617, 124, 0, 196618, 98, 0, 196619, 95, 0, 196620, 99, 0, 196621, 127, 0, 262154, 124, 0, 262155, 126, 0, 262156, 127, 0, 327687, 95, 0, 524291, 34, 0, 524292, 35, 0, 524293, 36, 0, 524294, 37, 0, 524299, 34, 0, 524300, 37, 0, 589827, 64, 0, 589828, 95, 0, 589829, 95, 0, 589830, 67, 0, 589834, 34, 0, 589835, 38, 0, 589836, 39, 0, 589837, 35, 0, 589838, 37, 0, 655363, 124, 0, 655364, 126, 0, 655365, 125, 0, 655366, 127, 0, 655370, 124, 0, 655371, 98, 0, 655372, 95, 0, 655373, 99, 0, 655374, 127, 0, 720907, 124, 0, 720908, 126, 0, 720909, 127, 0, 786440, 95, 0 )
 
 [node name="Groups" type="Node2D" parent="Setup"]
 position = Vector2( -0.991592, 0.495796 )
@@ -80,6 +80,37 @@ relative = Vector2( 0, -1 )
 
 [node name="RightTop_Back" parent="Setup/Groups/Grass" instance=ExtResource( 5 )]
 position = Vector2( 164.939, 12.064 )
+tilemap = NodePath("../../../TileMaps/Background1")
+bitmask = 104
+relative = Vector2( 0, -1 )
+
+[node name="Dirt" parent="Setup/Groups" instance=ExtResource( 4 )]
+margin_left = 55.0
+margin_top = 282.0
+margin_right = 659.0
+margin_bottom = 573.0
+tilemap_path = NodePath("../../../../World/Setup/TileMaps/Forground1")
+
+[node name="LeftTop_Back" parent="Setup/Groups/Dirt" instance=ExtResource( 5 )]
+position = Vector2( 87.9045, 19.4368 )
+tilemap = NodePath("../../../TileMaps/Background1")
+bitmask = 208
+relative = Vector2( 0, -1 )
+
+[node name="MidTop1_Back" parent="Setup/Groups/Dirt" instance=ExtResource( 5 )]
+position = Vector2( 125.013, 18.6551 )
+tilemap = NodePath("../../../TileMaps/Background1")
+bitmask = 248
+relative = Vector2( 0, -1 )
+
+[node name="MidTop3_Back" parent="Setup/Groups/Dirt" instance=ExtResource( 5 )]
+position = Vector2( 161.339, 18.7801 )
+tilemap = NodePath("../../../TileMaps/Background1")
+bitmask = 248
+relative = Vector2( 0, -1 )
+
+[node name="RightTop_Back" parent="Setup/Groups/Dirt" instance=ExtResource( 5 )]
+position = Vector2( 203.529, 20.6853 )
 tilemap = NodePath("../../../TileMaps/Background1")
 bitmask = 104
 relative = Vector2( 0, -1 )

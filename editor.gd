@@ -87,13 +87,43 @@ func _on_Terminal_command_entered(command : Dictionary) -> void:
 		EditorCommands.Unknown:
 			_terminal.output.put(['[Unknown Command]'])
 		EditorCommands.Create:
-			var object = command['params'][0]
-			var location = command['params'][1]
-			match object:
-				EditorCommands.RegionParam:
-					var pos = _get_create_position(location)
-					_regions.create(pos, Vector2(1, 1))
-					_terminal.output.put(['Region created'])
+			_run_create_command(command['params'])
+		EditorCommands.Set:
+			_run_set_command(command['params'])
+
+func _run_create_command(params : Array) -> void:
+	var object = params[0]
+	var location = params[1]
+	match object:
+		EditorCommands.RegionParam:
+			var pos = _get_create_position(location)
+			_regions.create(pos, Vector2(1, 1))
+
+func _run_set_command(params : Array) -> void:
+	if params[0] == EditorCommands.RegionParam:
+		if _selected.empty() or not _selected.front() is EditorRegion:
+			_terminal.output.put_error_line('First selected is not a region')
+			return
+		
+		params.remove(0)
+		_run_set_region_command(params)
+		return
+	
+	_terminal.output.put_error_line(
+		"'%s' is not valid for the '%s' command]" % params[0] % EditorCommands.Set)
+	
+func _run_set_region_command(params : Array) -> void:
+	if params[0] == EditorCommands.TileSetParam:
+		if not _world.map_exists_for_tileset(params[1]):
+			_terminal.output.put_error_line(
+				"'%s' is not a valid tileset" % params[1])
+			return
+			
+		(_selected.front() as EditorRegion).set_tileset(params[1])
+		return
+	
+	_terminal.output.put_error_line(
+		"'%s' is not a property on the region" % params[0])
 
 func _get_create_position(location : String) -> Vector2:
 	if location == EditorCommands.CursorParam:

@@ -8,7 +8,15 @@ func _ready() -> void:
 
 func put(lines : Array) -> void:
 	for line in lines:
-		_add_line(line)
+		put_line(line)
+
+func put_line(line : String) -> void:
+	assert(line.find('\n') == -1)
+	_add_line(line)
+
+func put_error_line(line : String) -> void:
+	assert(line.find('\n') == -1)
+	_add_line('[%s]' % line)
 
 func _add_line(line : String) -> void:
 	buffer.push_front(line)

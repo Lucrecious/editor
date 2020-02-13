@@ -15,6 +15,7 @@ func _ready():
 func _create_tilesets() -> void:
 	for rect in _groups.get_children():
 		_maps[rect.name.to_lower()] = _create_map(rect as EditorTilesetGroup)
+		pass
 
 func _create_map(ref_rect : EditorTilesetGroup) -> EditorTilesetMap:
 	var rect := Rect2(ref_rect.rect_position, ref_rect.rect_size)

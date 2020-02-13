@@ -75,6 +75,12 @@ func _parse(command : String) -> Dictionary:
 		if not create_cmd: return cmd
 		return create_cmd
 	
+	if split[0] == EditorCommands.Set:
+		split.remove(0)
+		var set_cmd = _parse_set(split)
+		if not set_cmd: return cmd
+		return set_cmd
+	
 	return cmd
 
 func _parse_create(params : Array):
@@ -93,6 +99,27 @@ func _parse_create(params : Array):
 		}
 	
 	return null
+
+func _parse_set(params : Array):
+	if params.size() < 3: return null
+	
+	if params[0] == EditorCommands.RegionParam:
+		params.remove(0)
+		return _parse_region_set(params)
+	
+	return null
+
+func _parse_region_set(params : Array):
+	var property := params[0] as String
+	var value := params[1] as String
+	return {
+		'cmd' : EditorCommands.Set,
+		'params' : [
+			EditorCommands.RegionParam,
+			property,
+			value
+			]
+		}
 
 
 
