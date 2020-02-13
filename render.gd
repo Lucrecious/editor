@@ -6,7 +6,7 @@ onready var _regions := LutUtils.get_child_by_type(get_parent(), EditorRegions) 
 onready var _view := LutUtils.get_child_by_type(get_parent(), EditorView) as EditorView
 
 func _draw() -> void:
-	#_draw_regions()
+	_draw_regions()
 	_draw_selected_boxes()
 
 func _draw_regions() -> void:
@@ -18,7 +18,7 @@ func _draw_regions() -> void:
 			_grid.to_pixels(rect.position),
 			_grid.to_pixels(rect.size))
 		
-		draw_rect(rect, Color.red)
+		draw_rect(rect.grow(1), Color.red, false);
 
 func _draw_selected_boxes():
 	var selected := _editor.get_selected()

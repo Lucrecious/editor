@@ -14,13 +14,13 @@ func _ready():
 
 func _create_tilesets() -> void:
 	for rect in _groups.get_children():
-		_maps[rect.name.to_lower()] = _create_map(rect as ReferenceRect)
+		_maps[rect.name.to_lower()] = _create_map(rect as EditorTilesetGroup)
 
-func _create_map(ref_rect : ReferenceRect) -> EditorTilesetMap:
+func _create_map(ref_rect : EditorTilesetGroup) -> EditorTilesetMap:
 	var rect := Rect2(ref_rect.rect_position, ref_rect.rect_size)
 	var exempts := _get_exempts(ref_rect.get_children())
 	var tiles := _get_tiles_for_group(rect, exempts)
-	var map := EditorTilesetMap.new(tiles, exempts.values(), -1)
+	var map := EditorTilesetMap.new(ref_rect.tilemap().name, tiles, exempts.values(), -1)
 	return map
 
 func _get_exempts(exempts : Array) -> Dictionary:
@@ -43,15 +43,14 @@ func _get_tiles_for_group(rect : Rect2, exempts : Dictionary) -> Dictionary:
 			var coord := Vector2(start.x + c, start.y + r)
 			var id := tilemap.get_cellv(coord) as int
 			if id == TileMap.INVALID_CELL: continue
-			if _is_exempt(coord, tilemap, exempts): continue
+			if _is_exempt(coord, exempts): continue
 			tiles[coord] = id
 	
 	return tiles
 
-func _is_exempt(coord : Vector2, tilemap : TileMap, exempts : Dictionary) -> bool:
+func _is_exempt(coord : Vector2, exempts : Dictionary) -> bool:
 	var rule = exempts.get(coord)
 	if not rule: return false
-	if rule['tilemap'] != tilemap: return false
 	return true
 
 

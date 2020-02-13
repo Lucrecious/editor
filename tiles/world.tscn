@@ -1,0 +1,55 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://src/editor/tiles/world.gd" type="Script" id=1]
+[ext_resource path="res://src/editor/tiles/setup.gd" type="Script" id=2]
+[ext_resource path="res://assets/texture/tilesets/atlas1.tsx" type="TileSet" id=3]
+[ext_resource path="res://src/editor/tiles/tileset_group.tscn" type="PackedScene" id=4]
+[ext_resource path="res://src/editor/tiles/bitmask_rule.tscn" type="PackedScene" id=5]
+
+[node name="World" type="Node2D"]
+script = ExtResource( 1 )
+
+[node name="Setup" type="Node2D" parent="."]
+script = ExtResource( 2 )
+
+[node name="TileMaps" type="Node2D" parent="Setup"]
+
+[node name="Forground1" type="TileMap" parent="Setup/TileMaps"]
+tile_set = ExtResource( 3 )
+cell_size = Vector2( 40, 40 )
+format = 1
+tile_data = PoolIntArray( 2, 128, 0, 3, 129, 0, 4, 128, 0, 5, 131, 0, 65538, 158, 0, 65539, 159, 0, 65540, 160, 0, 65541, 161, 0, 65546, 158, 0, 65547, 161, 0, 131074, 64, 0, 131075, 95, 0, 131076, 95, 0, 131077, 67, 0, 131081, 158, 0, 131082, 95, 0, 131083, 95, 0, 131084, 160, 0, 131085, 161, 0, 196610, 124, 0, 196611, 126, 0, 196612, 125, 0, 196613, 127, 0, 196617, 124, 0, 196618, 98, 0, 196619, 95, 0, 196620, 99, 0, 196621, 127, 0, 262154, 124, 0, 262155, 126, 0, 262156, 127, 0, 327687, 95, 0 )
+
+[node name="Groups" type="Node2D" parent="Setup"]
+position = Vector2( -0.991592, 0.495796 )
+
+[node name="Grass" parent="Setup/Groups" instance=ExtResource( 4 )]
+margin_left = 53.0
+margin_top = 15.0
+margin_right = 601.0
+margin_bottom = 264.0
+tilemap_path = NodePath("../../../../World/Setup/TileMaps/Forground1")
+
+[node name="LeftTop" parent="Setup/Groups/Grass" instance=ExtResource( 5 )]
+position = Vector2( 49.314, 8.76277 )
+tilemap = NodePath("../../../../../World/Setup/TileMaps/Forground1")
+bitmask = 208
+relative = Vector2( 0, -1 )
+
+[node name="MidTop1" parent="Setup/Groups/Grass" instance=ExtResource( 5 )]
+position = Vector2( 88.8858, 10.0338 )
+tilemap = NodePath("../../../../../World/Setup/TileMaps/Forground1")
+bitmask = 248
+relative = Vector2( 0, -1 )
+
+[node name="MidTop2" parent="Setup/Groups/Grass" instance=ExtResource( 5 )]
+position = Vector2( 126.443, 13.0326 )
+tilemap = NodePath("../../../../../World/Setup/TileMaps/Forground1")
+bitmask = 248
+relative = Vector2( 0, -1 )
+
+[node name="RightTop" parent="Setup/Groups/Grass" instance=ExtResource( 5 )]
+position = Vector2( 164.939, 12.064 )
+tilemap = NodePath("../../../../../World/Setup/TileMaps/Forground1")
+bitmask = 104
+relative = Vector2( 0, -1 )

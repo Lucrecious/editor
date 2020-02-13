@@ -7,6 +7,7 @@ class_name EditorTilesetMap
 # -32 -64 128  5 6 7
 const Bits := [1, 2, 4, 8, 16, 32, 64, 128]
 
+var _tilemap_name : String
 var _patterns := {}
 var _bitmask_rules := {}
 var _default_id := TileMap.INVALID_CELL
@@ -25,19 +26,23 @@ func set_ids(tiles : Dictionary) -> Dictionary:
 		if not pattern:
 			ids[coord] = _default_id
 			continue
-		ids[coord] = pattern.get_id()
+		
+		var id := pattern.get_id()
+		ids[coord] = id
 	
 	return ids
+
+func tilemap_name() -> String:
+	return _tilemap_name
 
 func _apply_bitmask_rule(tiles : Dictionary, bitmask : int, coord : Vector2) -> void:
 	assert(bitmask in _bitmask_rules)
 	var ids := _bitmask_rules[bitmask] as Array
 	var rule := ids[randi() % ids.size()] as Dictionary
 	tiles[coord + rule['relative']] = rule['id']
-	
-	
 
-func _init(layout : Dictionary, bitmask_rules : Array, default_id : int) -> void:
+func _init(tilemap_name : String, layout : Dictionary, bitmask_rules : Array, default_id : int) -> void:
+	_tilemap_name = tilemap_name
 	_create_patterns(layout)
 	_fill_bitmask_rules(bitmask_rules)
 	_default_id = default_id
@@ -50,15 +55,13 @@ func _fill_bitmask_rules(rules : Array) -> void:
 
 func _create_patterns(layout : Dictionary) -> void:
 	for coord in layout.keys():
-		var id := layout.get(coord, TileMap.INVALID_CELL) as int
+		var id = layout.get(coord, null)
+		if not id: continue
 		if id == TileMap.INVALID_CELL: continue
 		var bitmask := _get_bitmask(layout, coord)
-		bitmask = _ignore_uncovered_corners(bitmask)
 		var pattern := _patterns.get(bitmask, Pattern.new(bitmask)) as Pattern
 		pattern.add_id(id)
 		_patterns[bitmask] = pattern
-	
-	return
 
 func _ignore_uncovered_corners(bitmask : int) -> int:
 	bitmask = _ignore_uncovered_corner(bitmask, 0, 1, 3)
@@ -93,6 +96,8 @@ func _get_bitmask(layout : Dictionary, coords : Vector2) -> int:
 	for i in range(Bits.size()):
 		bitmask += Bits[i] * mask[i]
 	
+	bitmask = _ignore_uncovered_corners(bitmask)
+	
 	return bitmask
 
 func _get_mask_value(layout : Dictionary, coords : Vector2) -> int:
@@ -107,7 +112,7 @@ class Pattern extends Reference:
 	func add_id(id : int) -> void:
 		_ids[id] = true
 	
-	func get_id() -> int:
+	func get_id() -> Dictionary:
 		assert(not _ids.empty())
 		var keys = _ids.keys()
 		var key = keys[randi() % keys.size()]
