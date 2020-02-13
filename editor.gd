@@ -102,10 +102,6 @@ func _run_create_command(params : Array) -> void:
 
 func _run_set_command(params : Array) -> void:
 	if params[0] == EditorCommands.RegionParam:
-		if _selected.empty() or not _selected.front() is EditorRegion:
-			_terminal.output.put_error_line('First selected is not a region')
-			return
-		
 		params.remove(0)
 		_run_set_region_command(params)
 		return
@@ -119,8 +115,10 @@ func _run_set_region_command(params : Array) -> void:
 			_terminal.output.put_error_line(
 				"'%s' is not a valid tileset" % params[1])
 			return
-			
-		(_selected.front() as EditorRegion).set_tileset(params[1])
+		
+		for selected in _selected:
+			if not selected is EditorRegion: continue
+			(selected as EditorRegion).set_tileset(params[1])
 		return
 	
 	_terminal.output.put_error_line(
