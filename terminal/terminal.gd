@@ -81,6 +81,12 @@ func _parse(command : String) -> Dictionary:
 		if not set_cmd: return cmd
 		return set_cmd
 	
+	if split[0] == EditorCommands.Toggle:
+		split.remove(0)
+		if split.size() == 0: return cmd
+		return { 'cmd' : EditorCommands.Toggle,
+				 'params' : [split[0]] }
+	
 	return cmd
 
 func _parse_create(params : Array):

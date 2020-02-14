@@ -92,6 +92,23 @@ func _on_Terminal_command_entered(command : Dictionary) -> void:
 			_run_create_command(command['params'])
 		EditorCommands.Set:
 			_run_set_command(command['params'])
+		EditorCommands.Toggle:
+			_run_toggle_command(command['params'][0])
+
+func _run_toggle_command(param : String) -> void:
+	match param:
+		EditorCommands.AllParam:
+			_render.toggle_grid_visible()
+			_render.toggle_hints_visible()
+			return
+		EditorCommands.GridParam:
+			_render.toggle_grid_visible()
+			return
+		EditorCommands.HintsParam:
+			_render.toggle_hints_visible()
+			return
+	
+	_terminal.output.put_error_line("'%s' is not valid for 'toggle'" % param)
 
 func _run_create_command(params : Array) -> void:
 	var object = params[0]
@@ -108,7 +125,7 @@ func _run_set_command(params : Array) -> void:
 		return
 	
 	_terminal.output.put_error_line(
-		"'%s' is not valid for the '%s' command]" % params[0] % EditorCommands.Set)
+		"'%s' is not valid for the '%s' command" % params[0] % EditorCommands.Set)
 	
 func _run_set_region_command(params : Array) -> void:
 	if params[0] == EditorCommands.TileSetParam:

@@ -7,10 +7,22 @@ onready var _view := LutUtils.get_child_by_type(get_parent(), EditorView) as Edi
 
 var _grid_color := Color.black
 
+var _grid_visible := true
+var _hints_visible := true
+
+func toggle_grid_visible() -> void:
+	_grid_visible = not _grid_visible
+	update()
+
+func toggle_hints_visible() -> void:
+	_hints_visible = not _hints_visible
+	update()
+
 func _draw() -> void:
-	#_draw_grid()
-	_draw_regions()
-	_draw_selected_boxes()
+	if _grid_visible: _draw_grid()
+	if _hints_visible:
+		_draw_regions()
+		_draw_selected_boxes()
 
 func _draw_grid() -> void:
 	var grid_rect := _grid.get_rect()
@@ -36,7 +48,7 @@ func _draw_regions() -> void:
 			_grid.to_pixels(rect.position),
 			_grid.to_pixels(rect.size))
 		
-		#draw_rect(rect, Color.red, false);
+		draw_rect(rect, Color.red, false);
 
 func _draw_selected_boxes():
 	var selected := _editor.get_selected()
