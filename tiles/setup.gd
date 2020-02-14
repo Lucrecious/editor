@@ -29,7 +29,9 @@ func _get_bitmask_rules(bitmask_rules : Array) -> Dictionary:
 	
 	for rule in bitmask_rules:
 		var coord := rule.get_coord() as Vector2
-		ids[coord] = rule
+		var rules := ids.get(coord, []) as Array
+		rules.append(rule)
+		ids[coord] = rules
 	
 	return ids
 

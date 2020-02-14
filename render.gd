@@ -5,9 +5,27 @@ onready var _grid := LutUtils.get_child_by_type(get_parent(), EditorGrid) as Edi
 onready var _regions := LutUtils.get_child_by_type(get_parent(), EditorRegions) as EditorRegions
 onready var _view := LutUtils.get_child_by_type(get_parent(), EditorView) as EditorView
 
+var _grid_color := Color.black
+
 func _draw() -> void:
+	#_draw_grid()
 	_draw_regions()
 	_draw_selected_boxes()
+
+func _draw_grid() -> void:
+	var grid_rect := _grid.get_rect()
+	var top_y = grid_rect.position.y
+	for i in range(grid_rect.position.x, grid_rect.end.x + 1, Constants.BLOCK_SIZE):
+		draw_line(
+			Vector2(i, grid_rect.position.y),
+			Vector2(i, grid_rect.end.y),
+			_grid_color)
+	
+	for i in range(grid_rect.position.y, grid_rect.end.y + 1, Constants.BLOCK_SIZE):
+		draw_line(
+			Vector2(grid_rect.position.x, i),
+			Vector2(grid_rect.end.x, i),
+			_grid_color)
 
 func _draw_regions() -> void:
 	var regions := _regions.all()
@@ -18,7 +36,7 @@ func _draw_regions() -> void:
 			_grid.to_pixels(rect.position),
 			_grid.to_pixels(rect.size))
 		
-		draw_rect(rect.grow(1), Color.red, false);
+		#draw_rect(rect, Color.red, false);
 
 func _draw_selected_boxes():
 	var selected := _editor.get_selected()

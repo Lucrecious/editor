@@ -22,6 +22,7 @@ func _connect_drawing_updates() -> void:
 	_regions.connect("regions_changed", _render, "update")
 	connect("selected_changed", _render, "update")
 	_view.connect("view_changed", _render, "update")
+	_grid.connect("grid_changed", _render, "update")
 
 func _update_tilemaps() -> void:
 	_world.clear_tilemaps()
