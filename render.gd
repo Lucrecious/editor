@@ -51,7 +51,10 @@ func _draw_regions() -> void:
 			_grid.to_pixels(rect.position),
 			_grid.to_pixels(rect.size))
 		
-		draw_rect(rect, Color.red, false);
+		if region.get_texture():
+			draw_rect(rect, Color.lightblue, false)
+		else:
+			draw_rect(rect, Color.red, false)
 
 func _draw_selected_boxes():
 	var selected := _editor.get_selected()

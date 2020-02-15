@@ -109,7 +109,8 @@ func _parse_create(params : Array):
 func _parse_set(params : Array):
 	if params.size() < 3: return null
 	
-	if params[0] == EditorCommands.RegionParam:
+	if params[0] == EditorCommands.RegionParam\
+	|| params[0] == EditorCommands.TextureParam:
 		params.remove(0)
 		return _parse_region_set(params)
 	

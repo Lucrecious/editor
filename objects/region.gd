@@ -14,6 +14,7 @@ func _init(update_regions : FuncRef, rect : Rect2):
 
 func set_texture(texture : String) -> void:
 	_texture = texture
+	_update_regions.call_func(EditorCommands.TextureParam, self)
 
 func get_texture():
 	return null if _texture.empty() else _texture

@@ -2,6 +2,8 @@ extends Node2D
 
 var _regions_collisions := {}
 
+const WorldCollisionScene := preload('res://src/game/environment/collision/collision.tscn')
+
 onready var _regions := $Model/Space/Regions as EditorRegions
 onready var _world := $Model/World as EditorWorld
 onready var _grid := $Model/Space/Grid
@@ -13,7 +15,8 @@ onready var _collisions := $Game/Collision
 func regions_changed(cmd : String, region : EditorRegion) -> void:
 	match cmd:
 		EditorCommands.Transformation:
-			if region.get_texture(): continue
+			if region.get_texture():
+				_set_collision(region)
 		EditorCommands.TextureParam:
 			if not region.get_texture():
 				_remove_collision(region)
@@ -32,13 +35,13 @@ func _remove_collision(region : EditorRegion) -> void:
 func _set_collision(region : EditorRegion) -> void:
 	var collision := _regions_collisions.get(region, null) as WorldCollision
 	if not collision:
-		collision = WorldCollision.new()
+		collision = WorldCollisionScene.instance()
 		_collisions.add_child(collision)
 		_regions_collisions[region] = collision
 	
 	var rect := region.rect()
 	rect.position = _grid.to_pixels(rect.position)
-	rect.size = _grid.to_pixel(rect.size)
+	rect.size = _grid.to_pixels(rect.size)
 	collision.set_collision_as_rect(rect)
 
 func _update_tilemaps() -> void:

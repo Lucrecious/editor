@@ -123,6 +123,17 @@ func _run_set_region_command(params : Array) -> void:
 			(selected as EditorRegion).set_tileset(params[1])
 		return
 	
+	if params[0] == EditorCommands.TextureParam:
+		if not Constants.CollisionTexture.has(params[1]):
+			_terminal.output.put_error_line(
+				"'%s' is not a valid texture" % params[1])
+			return
+		
+		for selected in _selected:
+			if not selected is EditorRegion: continue
+			(selected as EditorRegion).set_texture(params[1])
+		return
+	
 	_terminal.output.put_error_line(
 		"'%s' is not a property on the region" % params[0])
 
