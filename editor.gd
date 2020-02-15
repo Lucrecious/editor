@@ -5,11 +5,13 @@ class_name GameEditor
 signal selected_changed
 
 onready var _terminal := $HUD/Terminal
-onready var _regions := $Space/Regions as EditorRegions
-onready var _view := $Space/View as EditorView
-onready var _grid := $Space/Grid as EditorGrid
-onready var _world := $World
-onready var _render := $Space/Render
+onready var _regions := $GameMaker/Model/Space/Regions as EditorRegions
+onready var _view := $GameMaker/Model/Space/View as EditorView
+onready var _grid := $GameMaker/Model/Space/Grid as EditorGrid
+onready var _world := $GameMaker/Model/World
+onready var _render := $GameMaker/Model/Space/Render
+
+onready var _gamemaker := $GameMaker
 
 var fsm := FSM.new()
 
@@ -19,12 +21,14 @@ var _selected := []
 
 func _connect_drawing_updates() -> void:
 	_regions.connect('regions_changed', self, '_update_tilemaps')
-	_regions.connect("regions_changed", _render, "update")
+	_regions.connect("regions_changed", _render, "regions_changed")
 	connect("selected_changed", _render, "update")
 	_view.connect("view_changed", _render, "update")
 	_grid.connect("grid_changed", _render, "update")
+	
+	_regions.connect('regions_changed', _gamemaker, 'regions_changed')
 
-func _update_tilemaps() -> void:
+func _update_tilemaps(cmd : String, region : EditorRegion) -> void:
 	_world.clear_tilemaps()
 	var coverage_map := _regions.get_region_coverage_map()
 	var region_groups := _get_region_groups(coverage_map)

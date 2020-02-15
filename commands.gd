@@ -14,4 +14,5 @@ const Toggle := 'toggle'
 const GridParam := 'grid'
 const HintsParam := 'hints'
 const AllParam := 'all'
+const Transformation := 'transformation'
 

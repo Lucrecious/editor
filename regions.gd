@@ -2,14 +2,14 @@ extends Node2D
 
 class_name EditorRegions
 
-signal regions_changed
+signal regions_changed(command, region)
 
 var _regions := []
 
 var _update_regions_ref := funcref(self, "_update_regions")
 
-func _update_regions() -> void:
-	emit_signal("regions_changed")
+func _update_regions(command : String, region : EditorRegion) -> void:
+	emit_signal("regions_changed", command, region)
 
 func get_region_coverage_map() -> Dictionary:
 	var coverage_map := {}
@@ -56,7 +56,7 @@ func create(pos : Vector2, size := Vector2(1, 1)) -> EditorRegion:
 		EditorRegion.new(
 			_update_regions_ref,
 			Rect2(pos, size)))
-	_update_regions()
+	_update_regions(EditorCommands.Create, _regions.back())
 	return _regions.back()
 
 func get_at(coords : Vector2) -> EditorRegion:

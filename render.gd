@@ -1,6 +1,6 @@
 extends Node2D
 
-onready var _editor := get_parent().get_parent() as GameEditor
+onready var _editor := get_parent().get_parent().get_parent().get_parent() as GameEditor
 onready var _grid := LutUtils.get_child_by_type(get_parent(), EditorGrid) as EditorGrid
 onready var _regions := LutUtils.get_child_by_type(get_parent(), EditorRegions) as EditorRegions
 onready var _view := LutUtils.get_child_by_type(get_parent(), EditorView) as EditorView
@@ -16,6 +16,9 @@ func toggle_grid_visible() -> void:
 
 func toggle_hints_visible() -> void:
 	_hints_visible = not _hints_visible
+	update()
+
+func regions_changed(cmd : String, region : EditorRegion) -> void:
 	update()
 
 func _draw() -> void:
