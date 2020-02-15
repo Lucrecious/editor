@@ -4,12 +4,19 @@ class_name EditorRegion
 
 var _rect : Rect2
 var _tileset := ''
+var _texture := ''
 
 var _update_regions : FuncRef
 
 func _init(update_regions : FuncRef, rect : Rect2):
 	_update_regions = update_regions
 	_rect = rect
+
+func set_texture(texture : String) -> void:
+	_texture = texture
+
+func get_texture():
+	return null if _texture.empty() else _texture
 
 func get_tileset() -> String:
 	return _tileset
