@@ -12,7 +12,7 @@ var _patterns := {}
 var _bitmask_rules := {}
 var _default_id := TileMap.INVALID_CELL
 
-func get_required_tilemaps() -> Array:
+func get_required_tilemap_names() -> Array:
 	var tilemaps := { _tilemap_name : true }
 	for tilemap_rules in _bitmask_rules.values():
 		for rules in tilemap_rules.values(): for rule in rules:

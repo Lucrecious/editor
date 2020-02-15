@@ -20,32 +20,12 @@ var _event_current
 var _selected := []
 
 func _connect_drawing_updates() -> void:
-	_regions.connect('regions_changed', self, '_update_tilemaps')
 	_regions.connect("regions_changed", _render, "regions_changed")
 	connect("selected_changed", _render, "update")
 	_view.connect("view_changed", _render, "update")
 	_grid.connect("grid_changed", _render, "update")
 	
 	_regions.connect('regions_changed', _gamemaker, 'regions_changed')
-
-func _update_tilemaps(cmd : String, region : EditorRegion) -> void:
-	_world.clear_tilemaps()
-	var coverage_map := _regions.get_region_coverage_map()
-	var region_groups := _get_region_groups(coverage_map)
-	for region_group in region_groups.keys():
-		_world.draw_regions(region_group, coverage_map, region_groups[region_group])
-
-func _get_region_groups(coverage_map : Dictionary) -> Dictionary:
-	var region_groups := {}
-	
-	for region in _regions.all():
-		var tileset := (region as EditorRegion).get_tileset()
-		if not tileset: continue
-		var group := region_groups.get(tileset, []) as Array
-		group.append(region)
-		region_groups[tileset] = group
-	
-	return region_groups
 
 func _ready() -> void:
 	_connect_drawing_updates()
