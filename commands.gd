@@ -3,7 +3,7 @@ extends Reference
 class_name EditorCommands
 
 const Unknown := 'unknown'
-const Create := 'create'
+const Add := 'add'
 const RegionParam = 'region'
 const At := 'at'
 const DefaultParam := 'default'
@@ -16,4 +16,5 @@ const HintsParam := 'hints'
 const AllParam := 'all'
 const Transformation := 'transformation'
 const TextureParam := 'texture'
+const CharacterParam := 'char'
 

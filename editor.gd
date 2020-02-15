@@ -72,8 +72,8 @@ func _on_Terminal_command_entered(command : Dictionary) -> void:
 	match cmd:
 		EditorCommands.Unknown:
 			_terminal.output.put(['[Unknown Command]'])
-		EditorCommands.Create:
-			_run_create_command(command['params'])
+		EditorCommands.Add:
+			_run_add_command(command['params'])
 		EditorCommands.Set:
 			_run_set_command(command['params'])
 		EditorCommands.Toggle:
@@ -94,13 +94,16 @@ func _run_toggle_command(param : String) -> void:
 	
 	_terminal.output.put_error_line("'%s' is not valid for 'toggle'" % param)
 
-func _run_create_command(params : Array) -> void:
+func _run_add_command(params : Array) -> void:
 	var object = params[0]
 	var location = params[1]
+	var pos = _get_create_position(location)
 	match object:
 		EditorCommands.RegionParam:
-			var pos = _get_create_position(location)
 			_regions.create(pos, Vector2(1, 1))
+		EditorCommands.CharacterParam:
+			_gamemaker.add_character(Constants.CharacterRef.Player)
+			
 
 func _run_set_command(params : Array) -> void:
 	if params[0] == EditorCommands.RegionParam:

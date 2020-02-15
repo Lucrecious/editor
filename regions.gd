@@ -56,7 +56,7 @@ func create(pos : Vector2, size := Vector2(1, 1)) -> EditorRegion:
 		EditorRegion.new(
 			_update_regions_ref,
 			Rect2(pos, size)))
-	_update_regions(EditorCommands.Create, _regions.back())
+	_update_regions(EditorCommands.Add, _regions.back())
 	return _regions.back()
 
 func get_at(coords : Vector2) -> EditorRegion:

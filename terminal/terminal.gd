@@ -69,9 +69,9 @@ func _parse(command : String) -> Dictionary:
 	var cmd = { 'cmd' : EditorCommands.Unknown, 'params' : [] }
 	
 	var split = command.split(' ')
-	if split[0] == EditorCommands.Create:
+	if split[0] == EditorCommands.Add:
 		split.remove(0)
-		var create_cmd = _parse_create(split)
+		var create_cmd = _parse_add(split)
 		if not create_cmd: return cmd
 		return create_cmd
 	
@@ -89,19 +89,25 @@ func _parse(command : String) -> Dictionary:
 	
 	return cmd
 
-func _parse_create(params : Array):
+func _parse_add(params : Array):
 	if params.empty(): return null
 	
+	var location := EditorCommands.DefaultParam
+	if params.size() >= 3\
+	and params[1] == EditorCommands.At\
+	and params[2] == EditorCommands.CursorParam:
+		location = EditorCommands.CursorParam
+	
 	if params[0] == EditorCommands.RegionParam:
-		var location := EditorCommands.DefaultParam
-		if params.size() >= 3\
-		and params[1] == EditorCommands.At\
-		and params[2] == EditorCommands.CursorParam:
-			location = EditorCommands.CursorParam
-		
 		return {
-			'cmd' : EditorCommands.Create,
+			'cmd' : EditorCommands.Add,
 			'params' : [EditorCommands.RegionParam, location]
+		}
+	
+	if params[0] == EditorCommands.CharacterParam:
+		return {
+			'cmd' : EditorCommands.Add,
+			'params' : [EditorCommands.CharacterParam, location]
 		}
 	
 	return null
