@@ -10,7 +10,7 @@ var _properties := {}
 var _update_funcref : FuncRef
 
 func get_select_rect() -> Rect2:
-	var pos := _position + Vector2(.5, .5)
+	var pos := _position
 	var size := Vector2(.5, .5)
 	
 	return Rect2(pos - size / 2, size)

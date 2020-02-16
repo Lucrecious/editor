@@ -28,6 +28,7 @@ func _connect_drawing_updates() -> void:
 	_objects.connect('objects_changed', _render, 'objects_changed')
 	
 	_regions.connect('regions_changed', _gamemaker, 'regions_changed')
+	_objects.connect('objects_changed', _gamemaker, 'objects_changed')
 
 func _ready() -> void:
 	_connect_drawing_updates()
@@ -118,7 +119,7 @@ func _run_add_command(params : Array) -> void:
 		EditorCommands.RegionParam:
 			_regions.create(pos, Vector2(1, 1))
 		EditorCommands.SpawnerParam:
-			_objects.add_object(pos, EditorObjectTypes.Spawner)
+			_objects.add_object(pos + Vector2(.5, .5), EditorObjectTypes.Spawner)
 			
 
 func _run_set_command(params : Array) -> void:

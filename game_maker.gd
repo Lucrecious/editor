@@ -1,8 +1,10 @@
 extends Node2D
 
 var _regions_collisions := {}
+var _objects_nodes := {}
 
 const WorldCollisionScene := preload('res://src/game/environment/collision/collision.tscn')
+const SpawnerScenePath := 'res://src/game/meta/character_spawner.tscn'
 
 onready var _regions := $Model/Space/Regions as EditorRegions
 onready var _world := $Model/World as EditorWorld
@@ -14,7 +16,26 @@ onready var _collisions := $Game/Collision
 onready var _characters := $Game/Characters
 
 func objects_changed(cmd : String, object : EditorObject) -> void:
-	pass
+	match cmd:
+		EditorCommands.Add:
+			_objects_nodes[object] = _add_object(object)
+		EditorCommands.Transformation:
+			if not object in _objects_nodes: return
+			_transform_object(object)
+
+func _add_object(object : EditorObject) -> Node2D:
+	var packed_scene := load(SpawnerScenePath)
+	var scene := packed_scene.instance() as Node2D
+	_characters.add_child(scene)
+	scene.global_position = _grid.to_pixels(object.get_position())
+	scene.spawn = 1
+	return scene
+
+func _transform_object(object : EditorObject) -> void:
+	assert(object in _objects_nodes)
+	var node := _objects_nodes[object] as CharSpawner
+	node.global_position = _grid.to_pixels(object.get_position())
+	
 
 func regions_changed(cmd : String, region : EditorRegion) -> void:
 	match cmd:
