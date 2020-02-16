@@ -90,6 +90,15 @@ func _draw_selected_boxes():
 func _select_first(select):
 	if select is EditorRegion:
 		_draw_region_transformation_hints(select as EditorRegion)
+	if select is EditorObject:
+		_draw_object_transformation_hints(select as EditorObject)
+
+func _draw_object_transformation_hints(object : EditorObject) -> void:
+	var rect := object.get_select_rect()
+	rect.position = _grid.to_pixels(rect.position)
+	rect.size = _grid.to_pixels(rect.size)
+	
+	draw_rect(rect.grow(-3 * _view.get_zoom()), Color.black, true)
 
 func _draw_region_transformation_hints(region : EditorRegion) -> void:
 	var pos := _grid.to_pixels(region.movement_hint_position())
@@ -112,7 +121,7 @@ func _draw_object_select(object : EditorObject) -> void:
 	rect.position = _grid.to_pixels(rect.position)
 	rect.size = _grid.to_pixels(rect.size)
 	
-	draw_rect(rect.grow(-2 * _view.get_zoom()), SelectedColor, true)
+	draw_rect(rect.grow(3 * _view.get_zoom()), SelectedColor, false)
 
 
 

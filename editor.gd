@@ -188,13 +188,13 @@ var _state_move_selected := FSMQuickState.new(fsm)\
 	.add_enter(self, "_state_move_selected_enter")\
 	.add_main(self, "_state_move_selected_main")
 func _state_move_selected_enter(from : FSMState) -> void:
-	_state_move_selected.data['alt_coords'] = _grid.to_coords(get_global_mouse_position())
+	_state_move_selected.data['alt_coords'] = _grid.to_coords(get_global_mouse_position(), _is_first_selected_snapping())
 func _state_move_selected_main() -> void:
 	if not _event_current is InputEventMouseMotion: return
 	var event := _event_current as InputEventMouseMotion
 	
 	var _last_alt_coords := _state_move_selected.data['alt_coords'] as Vector2
-	var _now_alt_coords := _grid.to_coords(get_global_mouse_position())
+	var _now_alt_coords := _grid.to_coords(get_global_mouse_position(), _is_first_selected_snapping())
 	
 	var delta := _now_alt_coords - _last_alt_coords
 	
@@ -269,6 +269,9 @@ func _to_move_selected_evaluation() -> bool:
 	var select = _selected.front()
 	if select is EditorRegion:
 		return _is_moving_region(select as EditorRegion)
+		
+	if select is EditorObject:
+		return _is_moving_object(select as EditorObject)
 	
 	return false
 
@@ -280,6 +283,10 @@ func _from_move_selected_evaluation() -> bool:
 func _is_moving_region(region : EditorRegion) -> bool:
 	return _cursor_within(region.movement_hint_position(), region.movement_hint_size())
 
+func _is_moving_object(object : EditorObject) -> bool:
+	var mpos := _grid.to_coords(get_global_mouse_position(), false) as Vector2
+	return object.get_select_rect().has_point(mpos)
+
 func _is_scaling_region(region : EditorRegion) -> bool:
 	return _cursor_within(region.scale_hint_position(), region.scale_hint_size())
 
@@ -289,7 +296,10 @@ func _cursor_within(pos : Vector2, max_distance : float) -> bool:
 	var distance := (cpos - mpos).length()
 	return distance < _grid.to_pixelsf(max_distance) * _view.get_zoom()
 
-
+func _is_first_selected_snapping() -> bool:
+	assert(not _selected.empty())
+	return _selected.front() is EditorRegion\
+		or (_selected.front() is EditorObject and _selected.front().is_snapping())
 
 
 
