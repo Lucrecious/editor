@@ -104,10 +104,10 @@ func _parse_add(params : Array):
 			'params' : [EditorCommands.RegionParam, location]
 		}
 	
-	if params[0] == EditorCommands.CharacterParam:
+	if params[0] == EditorCommands.SpawnerParam:
 		return {
 			'cmd' : EditorCommands.Add,
-			'params' : [EditorCommands.CharacterParam, location]
+			'params' : [EditorCommands.SpawnerParam, location]
 		}
 	
 	return null

@@ -6,6 +6,7 @@ signal selected_changed
 
 onready var _terminal := $HUD/Terminal
 onready var _regions := $GameMaker/Model/Space/Regions as EditorRegions
+onready var _objects := $GameMaker/Model/Space/Objects as EditorObjects
 onready var _view := $GameMaker/Model/Space/View as EditorView
 onready var _grid := $GameMaker/Model/Space/Grid as EditorGrid
 onready var _world := $GameMaker/Model/World
@@ -20,10 +21,11 @@ var _event_current
 var _selected := []
 
 func _connect_drawing_updates() -> void:
-	_regions.connect("regions_changed", _render, "regions_changed")
-	connect("selected_changed", _render, "update")
-	_view.connect("view_changed", _render, "update")
-	_grid.connect("grid_changed", _render, "update")
+	_regions.connect('regions_changed', _render, 'regions_changed')
+	connect('selected_changed', _render, 'update')
+	_view.connect('view_changed', _render, 'update')
+	_grid.connect('grid_changed', _render, 'update')
+	_objects.connect('objects_changed', _render, 'objects_changed')
 	
 	_regions.connect('regions_changed', _gamemaker, 'regions_changed')
 
@@ -54,16 +56,30 @@ func _select(add : bool) -> void:
 	if not add:
 		_selected.clear()
 	
-	var mpos := _grid.to_coords(get_global_mouse_position())
+	var mpos := _grid.to_coords(get_global_mouse_position(), true)
 	var region = _regions.get_at(mpos)
-	
 	if region:
 		if add and region in _selected:
 			_selected.erase(region)
 		else:
 			_selected.append(region)
+			
+		emit_signal('selected_changed')
+		return
 	
-	emit_signal("selected_changed")
+	mpos = _grid.to_coords(get_global_mouse_position(), false)
+	var object = _objects.get_at(mpos)
+	if object:
+		if add and object in _selected:
+			_selected.erase(object)
+		else:
+			_selected.append(object)
+		
+		emit_signal('selected_changed')
+		return
+	
+	emit_signal('selected_changed')
+
 
 func _on_Terminal_command_entered(command : Dictionary) -> void:
 	var cmd = command['cmd']
@@ -101,8 +117,8 @@ func _run_add_command(params : Array) -> void:
 	match object:
 		EditorCommands.RegionParam:
 			_regions.create(pos, Vector2(1, 1))
-		EditorCommands.CharacterParam:
-			_gamemaker.add_character(Constants.CharacterRef.Player)
+		EditorCommands.SpawnerParam:
+			_objects.add_object(pos, EditorObjectTypes.Spawner)
 			
 
 func _run_set_command(params : Array) -> void:

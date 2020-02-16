@@ -24,11 +24,11 @@ func to_pixels(coords : Vector2) -> Vector2:
 func to_pixelsf(coord : float) -> float:
 	return coord * _units
 
-func to_coords(pixels : Vector2) -> Vector2:
-	return Vector2(to_coordsf(pixels.x), to_coordsf(pixels.y))
+func to_coords(pixels : Vector2, to_int := true) -> Vector2:
+	return Vector2(to_coordsf(pixels.x, to_int), to_coordsf(pixels.y, to_int))
 
-func to_coordsf(pixels : float) -> int:
+func to_coordsf(pixels : float, to_int := true) -> float:
 	var coord := pixels / Constants.BLOCK_SIZE
-	if coord < 0: coord -= 1
-	return int(coord)
+	if coord < 0 and to_int: coord -= 1.0
+	return int(coord) if to_int else coord
 

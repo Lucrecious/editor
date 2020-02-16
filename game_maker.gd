@@ -4,10 +4,6 @@ var _regions_collisions := {}
 
 const WorldCollisionScene := preload('res://src/game/environment/collision/collision.tscn')
 
-const Characters := {
-	Constants.CharacterRef.Player : preload('res://src/game/characters/player/player.tscn')
-}
-
 onready var _regions := $Model/Space/Regions as EditorRegions
 onready var _world := $Model/World as EditorWorld
 onready var _grid := $Model/Space/Grid
@@ -17,11 +13,8 @@ onready var _copy_tilemaps := $Model/World/Setup/TileMaps
 onready var _collisions := $Game/Collision
 onready var _characters := $Game/Characters
 
-func add_character(character_ref : String) -> void:
-	var character_scene := Characters.get(character_ref) as PackedScene
-	var character = character_scene.instance()
-	_characters.add_child(character)
-	character.global_position = Vector2()
+func objects_changed(cmd : String, object : EditorObject) -> void:
+	pass
 
 func regions_changed(cmd : String, region : EditorRegion) -> void:
 	match cmd:

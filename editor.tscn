@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://src/editor/editor.gd" type="Script" id=1]
 [ext_resource path="res://src/editor/hud.gd" type="Script" id=2]
@@ -11,6 +11,7 @@
 [ext_resource path="res://src/editor/view.tscn" type="PackedScene" id=9]
 [ext_resource path="res://src/editor/grid.tscn" type="PackedScene" id=10]
 [ext_resource path="res://src/editor/regions.tscn" type="PackedScene" id=11]
+[ext_resource path="res://src/editor/objects.gd" type="Script" id=12]
 
 [node name="Editor" type="Node2D"]
 script = ExtResource( 1 )
@@ -42,4 +43,7 @@ script = ExtResource( 8 )
 [node name="Grid" parent="GameMaker/Model/Space" instance=ExtResource( 10 )]
 
 [node name="Regions" parent="GameMaker/Model/Space" instance=ExtResource( 11 )]
+
+[node name="Objects" type="Node2D" parent="GameMaker/Model/Space"]
+script = ExtResource( 12 )
 [connection signal="command_entered" from="HUD/Terminal" to="." method="_on_Terminal_command_entered"]

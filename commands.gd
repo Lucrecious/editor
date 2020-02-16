@@ -16,5 +16,5 @@ const HintsParam := 'hints'
 const AllParam := 'all'
 const Transformation := 'transformation'
 const TextureParam := 'texture'
-const CharacterParam := 'char'
+const SpawnerParam := 'spawner'
 
