@@ -135,7 +135,7 @@ func _add_tilemaps(tilemap_names : Array) -> Dictionary:
 		new_tilemap.clear()
 		tilemaps[n] = new_tilemap
 	
-	_sort_tilemaps(LutUtils.get_children_by_type(self, TileMap))
+	_sort_tilemaps(LutUtils.get_children_by_type(_tilemaps, TileMap))
 	
 	return tilemaps
 
@@ -159,5 +159,6 @@ class TileMapSorter:
 		assert(t1i != -1)
 		
 		var t2i := _actual_order.find(t2.name)
+		assert(t2i != -1)
 		
-		return t1i < t2i
+		return t1i > t2i
