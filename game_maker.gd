@@ -10,6 +10,7 @@ onready var _regions := $Model/Space/Regions as EditorRegions
 onready var _world := $Model/World as EditorWorld
 onready var _grid := $Model/Space/Grid
 
+onready var _game := $Game
 onready var _tilemaps := $Game/TileMaps
 onready var _copy_tilemaps := $Model/World/Setup/TileMaps
 onready var _collisions := $Game/Collision
@@ -30,7 +31,9 @@ func _add_object(object : EditorObject) -> Node2D:
 			assert(object.get_property(EditorObjProp.Spawn))
 			var packed_scene := load(SpawnerScenePath)
 			var scene := packed_scene.instance() as Node2D
-			_characters.add_child(scene)
+			_add_node_to_game(_characters, scene)
+			scene.owner = _game
+			
 			scene.global_position = _grid.to_pixels(object.get_position())
 			scene.spawn = object.get_property(EditorObjProp.Spawn)
 			return scene
@@ -68,7 +71,7 @@ func _set_collision(region : EditorRegion) -> void:
 	var collision := _regions_collisions.get(region, null) as WorldCollision
 	if not collision:
 		collision = WorldCollisionScene.instance()
-		_collisions.add_child(collision)
+		_add_node_to_game(_collisions, collision)
 		_regions_collisions[region] = collision
 	
 	var rect := region.rect()
@@ -138,13 +141,17 @@ func _add_tilemaps(tilemap_names : Array) -> Dictionary:
 		packed.pack(tilemap)
 	
 		var new_tilemap := packed.instance() as TileMap
-		_tilemaps.add_child(new_tilemap)
+		_add_node_to_game(_tilemaps, new_tilemap)
 		new_tilemap.clear()
 		tilemaps[n] = new_tilemap
 	
 	_sort_tilemaps(LutUtils.get_children_by_type(_tilemaps, TileMap))
 	
 	return tilemaps
+
+func _add_node_to_game(path : Node, node : Node) -> void:
+	path.add_child(node)
+	node.owner = _game
 
 func _sort_tilemaps(tilemaps : Array) -> void:
 	var actual_order := []

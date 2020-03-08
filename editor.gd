@@ -185,6 +185,10 @@ func _state_idle_main() -> void:
 	elif Input.is_action_just_pressed("editor_select"):
 		var add := Input.is_action_pressed("editor_modifier")
 		_select(add)
+	elif Input.is_action_just_pressed('editor_test'):
+		var game_packed := PackedScene.new()
+		game_packed.pack($GameMaker/Game)
+		get_tree().change_scene_to(game_packed)
 
 var _state_move_view := FSMQuickState.new(fsm)\
 	.add_main(self, "_state_move_view_main")
