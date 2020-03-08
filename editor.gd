@@ -118,13 +118,17 @@ func _run_toggle_command(param : String) -> void:
 func _run_add_command(params : Array) -> void:
 	var object = params[0]
 	var location = params[1]
+	var template = params[2]
 	var pos = _get_create_position(location)
 	var added = null
 	match object:
 		EditorCommands.RegionParam:
 			added = _regions.create(pos, Vector2(1, 1))
 		EditorCommands.SpawnerParam:
-			added = _objects.add_object(pos + Vector2(.5, .5), EditorObjectTypes.Spawner)
+			if template == EditorTemplates.PlayerTemplate:
+				added = _objects.add_object(pos + Vector2(.5, .5), EditorObjectTypes.PlayerSpawner)
+			else:
+				added = _objects.add_object(pos + Vector2(.5, .5), EditorObjectTypes.Spawner)
 		
 	assert(added)
 	_select_obj(added)

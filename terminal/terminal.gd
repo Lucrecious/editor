@@ -66,48 +66,54 @@ func _add_history(text : String) -> void:
 func _parse(command : String) -> Dictionary:
 	assert(not command.strip_edges().empty())
 	
-	var cmd = { 'cmd' : EditorCommands.Unknown, 'params' : [] }
+	var unknown_cmd = { 'cmd' : EditorCommands.Unknown, 'params' : [] }
 	
 	var split = command.split(' ')
 	if split[0] == EditorCommands.Add:
 		split.remove(0)
 		var create_cmd = _parse_add(split)
-		if not create_cmd: return cmd
+		if not create_cmd: return unknown_cmd
 		return create_cmd
 	
 	if split[0] == EditorCommands.Set:
 		split.remove(0)
 		var set_cmd = _parse_set(split)
-		if not set_cmd: return cmd
+		if not set_cmd: return unknown_cmd
 		return set_cmd
 	
 	if split[0] == EditorCommands.Toggle:
 		split.remove(0)
-		if split.size() == 0: return cmd
+		if split.size() == 0: return unknown_cmd
 		return { 'cmd' : EditorCommands.Toggle,
 				 'params' : [split[0]] }
 	
-	return cmd
+	return unknown_cmd
 
 func _parse_add(params : Array):
 	if params.empty(): return null
 	
 	var location := EditorCommands.DefaultParam
-	if params.size() >= 3\
-	and params[1] == EditorCommands.At\
-	and params[2] == EditorCommands.CursorParam:
-		location = EditorCommands.CursorParam
+	var template := ''
+	while params.size() >= 3:
+		if params[1] == EditorCommands.At\
+		and params[2] == EditorCommands.CursorParam:
+			location = EditorCommands.CursorParam
+		elif params[1] == EditorCommands.As:
+			template = params[2]
+		
+		params.remove(1)
+		params.remove(1)
 	
 	if params[0] == EditorCommands.RegionParam:
 		return {
 			'cmd' : EditorCommands.Add,
-			'params' : [EditorCommands.RegionParam, location]
+			'params' : [EditorCommands.RegionParam, location, template]
 		}
 	
 	if params[0] == EditorCommands.SpawnerParam:
 		return {
 			'cmd' : EditorCommands.Add,
-			'params' : [EditorCommands.SpawnerParam, location]
+			'params' : [EditorCommands.SpawnerParam, location, template]
 		}
 	
 	return null

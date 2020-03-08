@@ -24,12 +24,19 @@ func objects_changed(cmd : String, object : EditorObject) -> void:
 			_transform_object(object)
 
 func _add_object(object : EditorObject) -> Node2D:
-	var packed_scene := load(SpawnerScenePath)
-	var scene := packed_scene.instance() as Node2D
-	_characters.add_child(scene)
-	scene.global_position = _grid.to_pixels(object.get_position())
-	scene.spawn = 1
-	return scene
+	match object.get_type():
+		EditorObjectTypes.Spawner,\
+		EditorObjectTypes.PlayerSpawner:
+			assert(object.get_property(EditorObjProp.Spawn))
+			var packed_scene := load(SpawnerScenePath)
+			var scene := packed_scene.instance() as Node2D
+			_characters.add_child(scene)
+			scene.global_position = _grid.to_pixels(object.get_position())
+			scene.spawn = object.get_property(EditorObjProp.Spawn)
+			return scene
+	
+	assert(false)
+	return null
 
 func _transform_object(object : EditorObject) -> void:
 	assert(object in _objects_nodes)

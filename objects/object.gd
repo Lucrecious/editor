@@ -21,6 +21,12 @@ func _init(pos : Vector2, type : int, update_funcref : FuncRef) -> void:
 	_update_funcref = update_funcref
 	_properties = EditorObjectTypes.Properties[type].duplicate()
 
+func get_type() -> int:
+	return _type
+
+func get_property(name : String):
+	return _properties.get(name, null)
+
 func set_property(name : String, variant) -> bool:
 	if not name in _properties: return false
 	_properties[name] = variant
