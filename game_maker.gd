@@ -141,7 +141,7 @@ func _add_tilemaps(tilemap_names : Array) -> Dictionary:
 
 func _sort_tilemaps(tilemaps : Array) -> void:
 	var actual_order := []
-	for c in _tilemaps.get_children():
+	for c in _copy_tilemaps.get_children():
 		actual_order.append(c.name)
 	
 	tilemaps.sort_custom(TileMapSorter.new(actual_order), 'compare')
@@ -161,4 +161,4 @@ class TileMapSorter:
 		var t2i := _actual_order.find(t2.name)
 		assert(t2i != -1)
 		
-		return t1i > t2i
+		return t1i < t2i
