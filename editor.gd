@@ -53,6 +53,10 @@ func _unhandled_input(event):
 	_event_current = event
 	fsm.update(get_physics_process_delta_time())
 
+func _select_obj(object):
+	_selected = [object]
+	emit_signal('selected_changed')
+
 func _select(add : bool) -> void:
 	if not add:
 		_selected.clear()
@@ -115,12 +119,15 @@ func _run_add_command(params : Array) -> void:
 	var object = params[0]
 	var location = params[1]
 	var pos = _get_create_position(location)
+	var added = null
 	match object:
 		EditorCommands.RegionParam:
-			_regions.create(pos, Vector2(1, 1))
+			added = _regions.create(pos, Vector2(1, 1))
 		EditorCommands.SpawnerParam:
-			_objects.add_object(pos + Vector2(.5, .5), EditorObjectTypes.Spawner)
-			
+			added = _objects.add_object(pos + Vector2(.5, .5), EditorObjectTypes.Spawner)
+		
+	assert(added)
+	_select_obj(added)
 
 func _run_set_command(params : Array) -> void:
 	if params[0] == EditorCommands.RegionParam:
