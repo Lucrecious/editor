@@ -44,6 +44,9 @@ func _ready() -> void:
 	fsm.add_transition(_state_idle, _state_move_view, _to_move_view)
 	fsm.add_transition(_state_move_view, _state_idle, _from_move_view)
 	
+	fsm.add_transition(_state_idle, _state_play, _to_play)
+	fsm.add_transition(_state_play, _state_idle, _from_play)
+	
 	fsm.state(_state_idle)
 
 func get_selected() -> Array:
@@ -118,14 +121,15 @@ func _run_toggle_command(param : String) -> void:
 func _run_add_command(params : Array) -> void:
 	var object = params[0]
 	var location = params[1]
-	var template = params[2]
+	var template_name = params[2]
+	var template = EditorTemplates.get_template(template_name)
 	var pos = _get_create_position(location)
 	var added = null
 	match object:
 		EditorCommands.RegionParam:
-			added = _regions.create(pos, Vector2(1, 1))
+			added = _regions.create(pos, Vector2(1, 1), template)
 		EditorCommands.SpawnerParam:
-			if template == EditorTemplates.PlayerTemplate:
+			if template_name == EditorTemplates.PlayerTemplate:
 				added = _objects.add_object(pos + Vector2(.5, .5), EditorObjectTypes.PlayerSpawner)
 			else:
 				added = _objects.add_object(pos + Vector2(.5, .5), EditorObjectTypes.Spawner)
@@ -175,6 +179,39 @@ func _get_create_position(location : String) -> Vector2:
 	var default := _view.to_world(Vector2(.756, .51))
 	return _grid.to_coords(default)
 
+var _state_play := FSMQuickState.new(fsm)\
+	.add_data({ 'hud' : null, 'gamemaker' : null, 'testgame' : null })\
+	.add_enter(self, '_state_play_enter')\
+	.add_exit(self, '_state_play_exit')
+func _state_play_enter(from_state : FSMState) -> void:
+	var hud := $HUD
+	var gamemaker := $GameMaker
+	
+	var testgame_packed := PackedScene.new()
+	testgame_packed.pack($GameMaker/Game)
+	
+	_state_play.data['hud'] = hud
+	_state_play.data['gamemaker'] = gamemaker
+	remove_child(hud)
+	remove_child(gamemaker)
+	
+	var testgame = testgame_packed.instance()
+	_state_play.data['testgame'] = testgame
+	add_child(testgame)
+func _state_play_exit(to_state : FSMState) -> void:
+	var hud := _state_play.data['hud'] as Node
+	var gamemaker := _state_play.data['gamemaker'] as Node
+	var testgame := _state_play.data['testgame'] as Node
+	
+	remove_child(testgame)
+	
+	add_child(hud)
+	add_child(gamemaker)
+	
+	_state_play.data['testgame'] = null
+	_state_play.data['hud'] = null
+	_state_play.data['gamemaker'] = null
+
 var _state_idle := FSMQuickState.new(fsm)\
 	.add_main(self, "_state_idle_main")
 func _state_idle_main() -> void:
@@ -185,10 +222,6 @@ func _state_idle_main() -> void:
 	elif Input.is_action_just_pressed("editor_select"):
 		var add := Input.is_action_pressed("editor_modifier")
 		_select(add)
-	elif Input.is_action_just_pressed('editor_test'):
-		var game_packed := PackedScene.new()
-		game_packed.pack($GameMaker/Game)
-		get_tree().change_scene_to(game_packed)
 
 var _state_move_view := FSMQuickState.new(fsm)\
 	.add_main(self, "_state_move_view_main")
@@ -248,6 +281,16 @@ func _scale_selected(delta : Vector2):
 	var delta_grid = _grid.to_coords(delta)
 	
 	region.set_scale(scale + delta_grid)
+
+var _to_play := FSMQuickTransition.new(fsm)\
+	.set_evaluation(self, '_to_play_evaluation')
+func _to_play_evaluation() -> bool:
+	return Input.is_action_just_released('editor_test')
+
+var _from_play := FSMQuickTransition.new(fsm)\
+	.set_evaluation(self, '_from_play_evaluation')
+func _from_play_evaluation() -> bool:
+	return Input.is_action_just_released('editor_esc')
 
 var _to_scale_selected := FSMQuickTransition.new(fsm)\
 	.set_evaluation(self, "_to_scale_selected_evaluation")

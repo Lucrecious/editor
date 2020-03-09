@@ -51,13 +51,25 @@ func _get_coverage_coords(region : EditorRegion) -> Dictionary:
 	
 	return coverage
 
-func create(pos : Vector2, size := Vector2(1, 1)) -> EditorRegion:
+func create(pos : Vector2, size := Vector2(1, 1), template := {}) -> EditorRegion:
 	_regions.append(
 		EditorRegion.new(
 			_update_regions_ref,
 			Rect2(pos, size)))
+	_set_template(_regions.back(), template)
 	_update_regions(EditorCommands.Add, _regions.back())
 	return _regions.back()
+
+func _set_template(region : EditorRegion, template : Dictionary):
+	var tileset = template.get('tileset', null)
+	var texture = template.get('texture', null)
+	
+	if tileset:
+		region.set_tileset(tileset)
+	
+	if texture:
+		region.set_texture(texture)
+	
 
 func get_at(coords : Vector2) -> EditorRegion:
 	for i in range(_regions.size()-1, -1, -1):
