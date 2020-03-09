@@ -98,7 +98,7 @@ func _draw_object_transformation_hints(object : EditorObject) -> void:
 	rect.position = _grid.to_pixels(rect.position)
 	rect.size = _grid.to_pixels(rect.size)
 	
-	draw_rect(rect.grow(-3 * _view.get_zoom()), Color.black, true)
+	draw_rect(rect.grow(-1), Color.black, true)
 
 func _draw_region_transformation_hints(region : EditorRegion) -> void:
 	var pos := _grid.to_pixels(region.movement_hint_position())
@@ -121,7 +121,7 @@ func _draw_object_select(object : EditorObject) -> void:
 	rect.position = _grid.to_pixels(rect.position)
 	rect.size = _grid.to_pixels(rect.size)
 	
-	draw_rect(rect.grow(3 * _view.get_zoom()), SelectedColor, false)
+	draw_rect(rect.grow(3), SelectedColor, false)
 
 
 
