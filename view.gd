@@ -37,7 +37,6 @@ func get_rect2() -> Rect2:
 	
 	return rect2
 
-
 func _process(delta):
 	var zoom_diff = zoom - camera.zoom.x
 	if zoom_diff:

@@ -23,12 +23,15 @@ var _selected := []
 func _connect_drawing_updates() -> void:
 	_regions.connect('regions_changed', _render, 'regions_changed')
 	connect('selected_changed', _render, 'update')
-	_view.connect('view_changed', _render, 'update')
+	_view.connect('view_changed', self, '_update_grid')
 	_grid.connect('grid_changed', _render, 'update')
 	_objects.connect('objects_changed', _render, 'objects_changed')
 	
 	_regions.connect('regions_changed', _gamemaker, 'regions_changed')
 	_objects.connect('objects_changed', _gamemaker, 'objects_changed')
+
+func _update_grid() -> void:
+	_grid.set_view(_view.get_rect2())
 
 func _ready() -> void:
 	_connect_drawing_updates()
@@ -230,7 +233,7 @@ func _state_move_view_main() -> void:
 		var rel = (_event_current as InputEventMouseMotion).relative
 		_view.global_position -= Vector2(rel.x, rel.y) * _view.get_zoom()
 	
-	_grid.set_view(_view.get_rect2())
+	_update_grid()
 
 var _state_move_selected := FSMQuickState.new(fsm)\
 	.add_data({'alt_coords' : Vector2()})\
