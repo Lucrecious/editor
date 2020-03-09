@@ -71,6 +71,7 @@ func _set_collision(region : EditorRegion) -> void:
 	var collision := _regions_collisions.get(region, null) as WorldCollision
 	if not collision:
 		collision = WorldCollisionScene.instance()
+		collision.set_texture(region.get_texture())
 		_add_node_to_game(_collisions, collision)
 		_regions_collisions[region] = collision
 	
@@ -141,6 +142,7 @@ func _add_tilemaps(tilemap_names : Array) -> Dictionary:
 		packed.pack(tilemap)
 	
 		var new_tilemap := packed.instance() as TileMap
+		_set_collision_layer_mask(new_tilemap)
 		_add_node_to_game(_tilemaps, new_tilemap)
 		new_tilemap.clear()
 		tilemaps[n] = new_tilemap
@@ -148,6 +150,10 @@ func _add_tilemaps(tilemap_names : Array) -> Dictionary:
 	_sort_tilemaps(LutUtils.get_children_by_type(_tilemaps, TileMap))
 	
 	return tilemaps
+
+func _set_collision_layer_mask(tilemap : TileMap):
+	tilemap.collision_layer = LutMath.set_1bits([CollisionLayer.SolidWorld])
+	tilemap.collision_mask = 0
 
 func _add_node_to_game(path : Node, node : Node) -> void:
 	path.add_child(node)
