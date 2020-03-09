@@ -10,7 +10,15 @@ func maps() -> Dictionary:
 
 func _ready():
 	assert(_tilemaps.get_child_count())
+	_set_tilemap_z_indexes()
 	_create_tilesets()
+
+func _set_tilemap_z_indexes() -> void:
+	for tm in _tilemaps.get_children():
+		if tm.name.to_lower().begins_with('background'):
+			tm.z_index = Constants.BackgroundTileMapZIndex
+		elif tm.name.to_lower().begins_with('foreground'):
+			tm.z_index = Constants.ForegroundTileMapZIndex
 
 func _create_tilesets() -> void:
 	for rect in _groups.get_children():

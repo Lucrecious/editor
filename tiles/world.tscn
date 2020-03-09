@@ -20,7 +20,7 @@ cell_size = Vector2( 40, 40 )
 format = 1
 tile_data = PoolIntArray( 2, 22, 0, 3, 25, 0, 4, 23, 0, 5, 24, 0 )
 
-[node name="Forground1" type="TileMap" parent="Setup/TileMaps"]
+[node name="Foreground1" type="TileMap" parent="Setup/TileMaps"]
 tile_set = ExtResource( 3 )
 cell_size = Vector2( 40, 40 )
 format = 1
@@ -34,11 +34,11 @@ margin_left = 49.5551
 margin_top = 15.0
 margin_right = 597.555
 margin_bottom = 264.0
-tilemap_path = NodePath("../../../../World/Setup/TileMaps/Forground1")
+tilemap_path = NodePath("../../TileMaps/Foreground1")
 
 [node name="LeftTop" parent="Setup/Groups/Grass" instance=ExtResource( 5 )]
 position = Vector2( 49.314, 8.76277 )
-tilemap = NodePath("../../../../../World/Setup/TileMaps/Forground1")
+tilemap = NodePath("../../../TileMaps/Foreground1")
 bitmask = 208
 relative = Vector2( 0, -1 )
 
@@ -50,7 +50,7 @@ relative = Vector2( 0, -1 )
 
 [node name="MidTop1" parent="Setup/Groups/Grass" instance=ExtResource( 5 )]
 position = Vector2( 88.8858, 10.0338 )
-tilemap = NodePath("../../../../../World/Setup/TileMaps/Forground1")
+tilemap = NodePath("../../../TileMaps/Foreground1")
 bitmask = 248
 relative = Vector2( 0, -1 )
 
@@ -62,7 +62,7 @@ relative = Vector2( 0, -1 )
 
 [node name="MidTop2" parent="Setup/Groups/Grass" instance=ExtResource( 5 )]
 position = Vector2( 126.443, 13.0326 )
-tilemap = NodePath("../../../../../World/Setup/TileMaps/Forground1")
+tilemap = NodePath("../../../TileMaps/Foreground1")
 bitmask = 248
 relative = Vector2( 0, -1 )
 
@@ -74,7 +74,7 @@ relative = Vector2( 0, -1 )
 
 [node name="RightTop" parent="Setup/Groups/Grass" instance=ExtResource( 5 )]
 position = Vector2( 164.939, 12.064 )
-tilemap = NodePath("../../../../../World/Setup/TileMaps/Forground1")
+tilemap = NodePath("../../../TileMaps/Foreground1")
 bitmask = 104
 relative = Vector2( 0, -1 )
 
@@ -89,7 +89,7 @@ margin_left = 55.0
 margin_top = 282.0
 margin_right = 659.0
 margin_bottom = 573.0
-tilemap_path = NodePath("../../../../World/Setup/TileMaps/Forground1")
+tilemap_path = NodePath("../../TileMaps/Foreground1")
 
 [node name="LeftTop_Back" parent="Setup/Groups/Dirt" instance=ExtResource( 5 )]
 position = Vector2( 87.9045, 19.4368 )
